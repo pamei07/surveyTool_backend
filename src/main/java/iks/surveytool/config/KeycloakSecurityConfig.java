@@ -23,6 +23,7 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable();
     }
 
     // So that roles are not pre-fixed with 'ROLE_':
