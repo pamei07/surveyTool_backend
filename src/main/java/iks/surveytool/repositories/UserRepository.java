@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT DISTINCT u " +
@@ -16,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "AND qg.survey = s.id " +
             "AND s.id = :surveyId")
     List<User> findParticipatingUsersBySurveyId(@Param("surveyId") Long surveyId);
+
+    Optional<User> findUserByEmail(String email);
 }

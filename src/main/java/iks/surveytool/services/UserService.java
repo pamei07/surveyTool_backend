@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +49,27 @@ public class UserService {
 
     private List<User> findParticipatingUsersBySurveyId(Long surveyId) {
         return userRepository.findParticipatingUsersBySurveyId(surveyId);
+    }
+
+    public ResponseEntity<UserDTO> processUserByEMail(String eMail) {
+        UserDTO userDTO = mapUserToDTOByEMail(eMail);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    private UserDTO mapUserToDTOByEMail(String eMail) {
+        Optional<User> userOptional = findUserByEmail(eMail);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return modelMapper.map(user, UserDTO.class);
+        }
+        return null;
+    }
+
+    private Optional<User> findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 }

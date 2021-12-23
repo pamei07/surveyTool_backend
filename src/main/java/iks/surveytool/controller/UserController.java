@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Controller
@@ -19,6 +20,11 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         return userService.processUserDTO(userDTO);
+    }
+
+    @GetMapping(params = {"email"})
+    public ResponseEntity<UserDTO> findUserByEmail(@Email @RequestParam String email) {
+        return userService.processUserByEMail(email);
     }
 
     @GetMapping("/surveys/{surveyId}")
