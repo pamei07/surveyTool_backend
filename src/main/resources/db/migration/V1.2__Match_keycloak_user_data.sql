@@ -1,0 +1,4 @@
+ALTER TABLE surveyToolUser
+    ADD COLUMN firstName VARCHAR(255) NULL,
+    ADD COLUMN lastName  VARCHAR(255) NULL,
+    ADD COLUMN email     VARCHAR(255) NULL UNIQUE;
