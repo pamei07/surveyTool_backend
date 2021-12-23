@@ -10,6 +10,9 @@ import lombok.Setter;
 public class UserDTO extends AbstractDTO {
 
     private String name;
+    private String firstName;
+    private String lastName;
+    private String email;
 
     public UserDTO(Long id, String name) {
         super(id);

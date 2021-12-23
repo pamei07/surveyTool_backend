@@ -15,6 +15,9 @@ import java.util.List;
 public class User extends AbstractEntity {
 
     private String name;
+    private String firstName;
+    private String lastName;
+    private String email;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")

@@ -175,10 +175,16 @@ public class MappingAssertions {
     public static void assertUserDTO(UserDTO userDTO, User user) {
         assertEquals(userDTO.getId(), user.getId());
         assertEquals(userDTO.getName(), user.getName());
+        assertEquals(userDTO.getFirstName(), user.getFirstName());
+        assertEquals(userDTO.getLastName(), user.getLastName());
+        assertEquals(userDTO.getEmail(), user.getEmail());
     }
 
     public static void assertUser(User user, UserDTO userDTO) {
         assertEquals(user.getId(), userDTO.getId());
         assertEquals(user.getName(), userDTO.getName());
+        assertEquals(user.getFirstName(), userDTO.getFirstName());
+        assertEquals(user.getLastName(), userDTO.getLastName());
+        assertEquals(user.getEmail(), userDTO.getEmail());
     }
 }
