@@ -36,4 +36,10 @@ public class SurveyController {
     public ResponseEntity<List<SurveyOverviewDTO>> findOpenAccessSurveys() {
         return surveyService.processOpenAccessSurveys();
     }
+
+    // TODO: Change parameter by which the Surveys are fetched
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<SurveyOverviewDTO>> findSurveysByUserId(@PathVariable Long id) {
+        return surveyService.processSurveyByUserId(id);
+    }
 }

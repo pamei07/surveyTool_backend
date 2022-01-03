@@ -179,4 +179,20 @@ public class SurveyService {
         int randomNumber = random.nextInt(256);
         return Integer.toHexString(randomNumber);
     }
+
+    public ResponseEntity<List<SurveyOverviewDTO>> processSurveyByUserId(Long id) {
+        List<SurveyOverviewDTO> surveys = mapSurveysToDTOByUserId(id);
+        return ResponseEntity.ok(surveys);
+    }
+
+    private List<SurveyOverviewDTO> mapSurveysToDTOByUserId(Long id) {
+        List<Survey> surveys = findSurveysByUserId(id);
+        Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {
+        }.getType();
+        return modelMapper.map(surveys, surveyOverviewList);
+    }
+
+    private List<Survey> findSurveysByUserId(Long id) {
+        return surveyRepository.findSurveysByUserId(id);
+    }
 }
