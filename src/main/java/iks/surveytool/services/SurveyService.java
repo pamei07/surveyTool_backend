@@ -193,6 +193,6 @@ public class SurveyService {
     }
 
     private List<Survey> findSurveysByUserId(Long id) {
-        return surveyRepository.findSurveysByUserId(id);
+        return surveyRepository.findSurveysByUserIdOrderByCreationTimeDesc(id);
     }
 }
