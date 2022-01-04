@@ -19,7 +19,7 @@ public class User extends AbstractEntity {
     private String lastName;
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "userId")
     private List<Answer> answers;
 
