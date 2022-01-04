@@ -195,4 +195,13 @@ public class SurveyService {
     private List<Survey> findSurveysByUserId(Long id) {
         return surveyRepository.findSurveysByUserIdOrderByCreationTimeDesc(id);
     }
+
+    public ResponseEntity<?> processDeletionOfSurveyById(Long id) {
+        try {
+            surveyRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }
