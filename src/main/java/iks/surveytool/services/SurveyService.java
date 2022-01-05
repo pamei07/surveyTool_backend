@@ -3,6 +3,7 @@ package iks.surveytool.services;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
+import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +26,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SurveyService {
     private final SurveyRepository surveyRepository;
+    private final QuestionGroupRepository questionGroupRepository;
     private final ModelMapper modelMapper;
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
@@ -203,5 +206,35 @@ public class SurveyService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @Transactional
+    public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO) {
+        Survey updatedSurvey = mapSurveyToEntity(surveyDTO);
+        if (updatedSurvey.validate()) {
+            Long id = updatedSurvey.getId();
+            Optional<Survey> surveyOptional = surveyRepository.findById(id);
+            if (surveyOptional.isPresent()) {
+                Survey surveyToUpdate = surveyOptional.get();
+                updateSurvey(surveyToUpdate, updatedSurvey);
+                Survey savedSurvey = saveSurvey(surveyToUpdate);
+                SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+                return ResponseEntity.ok(completeSurveyDTO);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
+
+    private void updateSurvey(Survey surveyToUpdate, Survey updatedSurvey) {
+        surveyToUpdate.setName(updatedSurvey.getName());
+        surveyToUpdate.setDescription(updatedSurvey.getDescription());
+        surveyToUpdate.setStartDate(updatedSurvey.getStartDate());
+        surveyToUpdate.setEndDate(updatedSurvey.getEndDate());
+        surveyToUpdate.setOpenAccess(updatedSurvey.isOpenAccess());
+        surveyToUpdate.setAnonymousParticipation(updatedSurvey.isAnonymousParticipation());
+        questionGroupRepository.deleteQuestionGroupsBySurvey_Id(surveyToUpdate.getId());
+        surveyToUpdate.setQuestionGroups(updatedSurvey.getQuestionGroups());
     }
 }

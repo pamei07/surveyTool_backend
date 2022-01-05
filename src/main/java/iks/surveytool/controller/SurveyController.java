@@ -47,4 +47,10 @@ public class SurveyController {
     public ResponseEntity<?> deleteSurveyById(@PathVariable Long id) {
         return surveyService.processDeletionOfSurveyById(id);
     }
+
+    @PutMapping
+    public ResponseEntity<SurveyOverviewDTO> updateSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
+        return surveyService.processUpdateOfSurvey(surveyDTO);
+    }
+
 }
