@@ -46,12 +46,6 @@ public class AnswerService {
         return answerRepository.saveAll(answerList);
     }
 
-    private List<AnswerDTO> mapAnswersToDTO(List<Answer> answers) {
-        Type answerDTOList = new TypeToken<List<AnswerDTO>>() {
-        }.getType();
-        return modelMapper.map(answers, answerDTOList);
-    }
-
     public ResponseEntity<List<AnswerDTO>> processAnswersByQuestionId(Long questionId) {
         List<AnswerDTO> answerDTOs = mapAnswersToDTOByQuestionId(questionId);
         return ResponseEntity.ok(answerDTOs);
@@ -62,7 +56,27 @@ public class AnswerService {
         return mapAnswersToDTO(answers);
     }
 
+    private List<AnswerDTO> mapAnswersToDTO(List<Answer> answers) {
+        Type answerDTOList = new TypeToken<List<AnswerDTO>>() {
+        }.getType();
+        return modelMapper.map(answers, answerDTOList);
+    }
+
     private List<Answer> findAnswersByQuestionId(Long questionId) {
         return answerRepository.findAllByQuestion_Id(questionId);
+    }
+
+    public ResponseEntity<List<AnswerDTO>> processAnswersBySurveyId(Long surveyId) {
+        List<AnswerDTO> answerDTOs = mapAnswersToDTOBySurveyId(surveyId);
+        return ResponseEntity.ok(answerDTOs);
+    }
+
+    private List<AnswerDTO> mapAnswersToDTOBySurveyId(Long surveyId) {
+        List<Answer> answers = findAnswersBySurveyId(surveyId);
+        return mapAnswersToDTO(answers);
+    }
+
+    private List<Answer> findAnswersBySurveyId(Long surveyId) {
+        return answerRepository.findAnswersBySurvey_Id(surveyId);
     }
 }
