@@ -1,6 +1,7 @@
 package iks.surveytool.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 abstract class AbstractEntity {
     @Id
@@ -27,4 +29,8 @@ abstract class AbstractEntity {
 
     @Version
     private Integer version;
+
+    public AbstractEntity(Long id) {
+        this.id = id;
+    }
 }

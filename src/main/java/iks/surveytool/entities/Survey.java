@@ -61,6 +61,28 @@ public class Survey extends AbstractEntity {
         this.questionGroups = questionGroups;
     }
 
+    public Survey(Long id,
+                  String name,
+                  String description,
+                  LocalDateTime startDate,
+                  LocalDateTime endDate,
+                  boolean openAccess,
+                  boolean anonymousParticipation,
+                  String accessId,
+                  String participationId,
+                  List<QuestionGroup> questionGroups) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.openAccess = openAccess;
+        this.anonymousParticipation = anonymousParticipation;
+        this.accessId = accessId;
+        this.participationId = participationId;
+        this.questionGroups = questionGroups;
+    }
+
     public boolean validate() {
         return this.checkIfComplete() && checkIfDataIsValid();
     }
