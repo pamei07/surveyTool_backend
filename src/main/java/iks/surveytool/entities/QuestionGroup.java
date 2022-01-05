@@ -15,7 +15,7 @@ public class QuestionGroup extends AbstractEntity {
 
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
 
