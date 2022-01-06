@@ -32,8 +32,9 @@ public class AnswerConverter {
 
         private Answer toAnswerEntity(AnswerDTO answerDTO) {
             String text = answerDTO.getText();
+            String participantName = answerDTO.getParticipantName();
 
-            Answer answer = new Answer(text);
+            Answer answer = new Answer(text, participantName);
 
             Long userId = answerDTO.getUserId();
             if (userId != null) {

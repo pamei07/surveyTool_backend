@@ -143,9 +143,9 @@ public class MappingAssertions {
     private static void assertAnswerDTO(AnswerDTO answerDTO, Answer answer) {
         assertEquals(answerDTO.getId(), answer.getId());
         assertEquals(answerDTO.getText(), answer.getText());
+        assertEquals(answerDTO.getParticipantName(), answer.getParticipantName());
 
         assertEquals(answerDTO.getUserId(), answer.getUser().getId());
-        assertEquals(answerDTO.getUserName(), answer.getUser().getName());
 
         if (answer.getCheckbox() != null) {
             assertEquals(answerDTO.getCheckboxId(), answer.getCheckbox().getId());
@@ -162,9 +162,9 @@ public class MappingAssertions {
     private static void assertAnswer(Answer answer, AnswerDTO answerDTO) {
         assertEquals(answer.getId(), answerDTO.getId());
         assertEquals(answer.getText(), answerDTO.getText());
+        assertEquals(answer.getParticipantName(), answerDTO.getParticipantName());
 
         assertEquals(answer.getUser().getId(), answerDTO.getUserId());
-        assertEquals(answer.getUser().getName(), answerDTO.getUserName());
 
         if (answerDTO.getCheckboxId() != null) {
             assertEquals(answer.getCheckbox().getId(), answerDTO.getCheckboxId());

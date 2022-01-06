@@ -13,6 +13,7 @@ public class AnswerBuilder {
         newAnswer.setUser(user);
         newAnswer.setQuestion(question);
         newAnswer.setCheckbox(checkbox);
+        newAnswer.setParticipantName("Default Name");
         return newAnswer;
     }
 }

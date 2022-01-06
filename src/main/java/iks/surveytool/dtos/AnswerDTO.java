@@ -12,23 +12,23 @@ public class AnswerDTO extends AbstractDTO {
     private String text;
 
     private Long userId;
-    private String userName;
+    private String participantName;
 
     private Long checkboxId;
     private Long questionId;
 
-    public AnswerDTO(Long id, String text, Long userId, String userName) {
+    public AnswerDTO(Long id, String text, Long userId, String participantName) {
         super(id);
         this.text = text;
         this.userId = userId;
-        this.userName = userName;
+        this.participantName = participantName;
     }
 
-    public AnswerDTO(Long id, String text, Long userId, String userName, Long checkboxId) {
+    public AnswerDTO(Long id, String text, Long userId, String participantName, Long checkboxId) {
         super(id);
         this.text = text;
         this.userId = userId;
-        this.userName = userName;
+        this.participantName = participantName;
         this.checkboxId = checkboxId;
     }
 }

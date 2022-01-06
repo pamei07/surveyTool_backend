@@ -153,11 +153,11 @@ public class MappingTest {
         AnswerDTO firstAnswerDTO = new AnswerDTO();
         firstAnswerDTO.setText("Text");
         firstAnswerDTO.setUserId(1L);
-        firstAnswerDTO.setUserName("Test User");
+        firstAnswerDTO.setParticipantName("Test User");
         firstAnswerDTO.setQuestionId(1L);
         AnswerDTO secondAnswerDTO = new AnswerDTO();
         secondAnswerDTO.setUserId(1L);
-        secondAnswerDTO.setUserName("Test User");
+        secondAnswerDTO.setParticipantName("Test User");
         secondAnswerDTO.setQuestionId(2L);
         secondAnswerDTO.setCheckboxId(1L);
 

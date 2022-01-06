@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 public class Answer extends AbstractEntity {
 
     private String text;
+    private String participantName;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "userId", nullable = false)
@@ -29,12 +30,13 @@ public class Answer extends AbstractEntity {
     @JoinColumn(name = "checkboxId")
     private Checkbox checkbox;
 
-    public Answer(String text) {
+    public Answer(String text, String participantName) {
         this.text = text;
+        this.participantName = participantName;
     }
 
     public boolean validate() {
-        if (this.user == null || this.question == null || (this.question.isHasCheckbox() && this.checkbox == null)) {
+        if (this.participantName == null || this.question == null || (this.question.isHasCheckbox() && this.checkbox == null)) {
             return false;
         }
         if (!this.question.isHasCheckbox() || this.checkbox.isHasTextField()) {
