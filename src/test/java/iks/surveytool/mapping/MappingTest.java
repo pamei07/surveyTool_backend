@@ -101,7 +101,7 @@ public class MappingTest {
         surveyDTO.setAccessId("Dummy String");
         surveyDTO.setParticipationId("Dummy String");
         surveyDTO.setUserId(1L);
-        surveyDTO.setUserName("Max Mustermann");
+        surveyDTO.setCreatorName("Max Mustermann");
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);

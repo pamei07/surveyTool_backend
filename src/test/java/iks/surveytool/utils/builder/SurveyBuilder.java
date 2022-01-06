@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class SurveyBuilder {
 
     String description = "Default Beschreibung";
+    String creatorName = "Test Creator";
     LocalDateTime startDate = LocalDateTime.of(2050, 1, 1, 12, 0);
     LocalDateTime endDate = startDate.plusWeeks(1L);
     boolean openAccess = false;
@@ -49,6 +50,7 @@ public class SurveyBuilder {
 
     private void setDefaults(Survey newSurvey) {
         newSurvey.setDescription(description);
+        newSurvey.setCreatorName(creatorName);
         newSurvey.setStartDate(startDate);
         newSurvey.setEndDate(endDate);
         newSurvey.setOpenAccess(openAccess);
