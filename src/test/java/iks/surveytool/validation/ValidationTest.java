@@ -405,7 +405,7 @@ class ValidationTest {
     }
 
     @Test
-    @DisplayName("Failed validation - User missing")
+    @DisplayName("Failed validation - creatorName missing")
     void surveyMissingUser() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
@@ -431,6 +431,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "User missing");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        survey.setCreatorName(null);
 
         assertFalse(survey.validate());
     }
