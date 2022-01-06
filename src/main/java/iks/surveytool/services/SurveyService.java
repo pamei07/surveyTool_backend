@@ -1,6 +1,7 @@
 package iks.surveytool.services;
 
 import iks.surveytool.dtos.CompleteSurveyDTO;
+import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.repositories.QuestionGroupRepository;
@@ -236,5 +237,23 @@ public class SurveyService {
         surveyToUpdate.setAnonymousParticipation(updatedSurvey.isAnonymousParticipation());
         questionGroupRepository.deleteQuestionGroupsBySurvey_Id(surveyToUpdate.getId());
         surveyToUpdate.setQuestionGroups(updatedSurvey.getQuestionGroups());
+    }
+
+    public ResponseEntity<SurveyOverviewDTO> processPatchingSurveyEndDate(SurveyEndDateDTO surveyEndDateDTO) {
+        if (!surveyEndDateDTO.checkIfEndDateValid()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
+        Long id = surveyEndDateDTO.getId();
+        Optional<Survey> surveyOptional = surveyRepository.findById(id);
+        if (surveyOptional.isPresent()) {
+            Survey surveyToUpdate = surveyOptional.get();
+            surveyToUpdate.setEndDate(surveyEndDateDTO.getEndDate());
+            Survey savedSurvey = saveSurvey(surveyToUpdate);
+            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+            return ResponseEntity.ok(completeSurveyDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

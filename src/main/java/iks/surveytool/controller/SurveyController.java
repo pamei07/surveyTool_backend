@@ -1,6 +1,7 @@
 package iks.surveytool.controller;
 
 import iks.surveytool.dtos.CompleteSurveyDTO;
+import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,11 @@ public class SurveyController {
     @PutMapping
     public ResponseEntity<SurveyOverviewDTO> updateSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         return surveyService.processUpdateOfSurvey(surveyDTO);
+    }
+
+    @PatchMapping
+    public ResponseEntity<SurveyOverviewDTO> patchSurveyEndDate(@RequestBody SurveyEndDateDTO surveyEndDateDTO) {
+        return surveyService.processPatchingSurveyEndDate(surveyEndDateDTO);
     }
 
 }
