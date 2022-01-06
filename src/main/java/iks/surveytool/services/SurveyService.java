@@ -240,6 +240,7 @@ public class SurveyService {
     private void updateSurvey(Survey surveyToUpdate, Survey updatedSurvey) {
         surveyToUpdate.setName(updatedSurvey.getName());
         surveyToUpdate.setDescription(updatedSurvey.getDescription());
+        surveyToUpdate.setCreatorName(updatedSurvey.getCreatorName());
         surveyToUpdate.setStartDate(updatedSurvey.getStartDate());
         surveyToUpdate.setEndDate(updatedSurvey.getEndDate());
         surveyToUpdate.setOpenAccess(updatedSurvey.isOpenAccess());
