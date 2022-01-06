@@ -25,9 +25,9 @@ public class CompleteSurveyDTO extends SurveyOverviewDTO {
                              String accessId,
                              String participationId,
                              Long userId,
-                             String userName,
+                             String creatorName,
                              List<QuestionGroupDTO> questionGroups) {
-        super(id, name, description, startDate, endDate, openAccess, anonymousParticipation, accessId, participationId, userId, userName);
+        super(id, name, description, startDate, endDate, openAccess, anonymousParticipation, accessId, participationId, userId, creatorName);
         this.questionGroups = questionGroups;
     }
 }

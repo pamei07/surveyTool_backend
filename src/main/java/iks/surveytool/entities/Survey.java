@@ -19,6 +19,7 @@ public class Survey extends AbstractEntity {
     @NotNull
     private String name;
     private String description;
+    private String creatorName;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
@@ -43,6 +44,7 @@ public class Survey extends AbstractEntity {
 
     public Survey(String name,
                   String description,
+                  String creatorName,
                   LocalDateTime startDate,
                   LocalDateTime endDate,
                   boolean openAccess,
@@ -52,6 +54,7 @@ public class Survey extends AbstractEntity {
                   List<QuestionGroup> questionGroups) {
         this.name = name;
         this.description = description;
+        this.creatorName = creatorName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.openAccess = openAccess;
@@ -64,6 +67,7 @@ public class Survey extends AbstractEntity {
     public Survey(Long id,
                   String name,
                   String description,
+                  String creatorName,
                   LocalDateTime startDate,
                   LocalDateTime endDate,
                   boolean openAccess,
@@ -74,6 +78,7 @@ public class Survey extends AbstractEntity {
         super(id);
         this.name = name;
         this.description = description;
+        this.creatorName = creatorName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.openAccess = openAccess;
@@ -88,7 +93,7 @@ public class Survey extends AbstractEntity {
     }
 
     private boolean checkIfComplete() {
-        return this.user != null
+        return this.creatorName != null
                 && !this.questionGroups.isEmpty()
                 && this.checkIfQuestionGroupsComplete();
     }
@@ -102,12 +107,13 @@ public class Survey extends AbstractEntity {
     }
 
     private boolean validateData() {
-        return this.checkNameAndDescription() && this.checkTimeframe();
+        return this.checkNameDescriptionAndCreatorName() && this.checkTimeframe();
     }
 
-    private boolean checkNameAndDescription() {
+    private boolean checkNameDescriptionAndCreatorName() {
         return this.name != null
                 && this.name.length() <= 255
+                && this.creatorName.length() <= 255
                 && this.description.length() <= 3000;
     }
 

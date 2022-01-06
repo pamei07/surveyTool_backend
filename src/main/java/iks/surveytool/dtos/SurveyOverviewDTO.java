@@ -23,7 +23,7 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private String participationId;
 
     private Long userId;
-    private String userName;
+    private String creatorName;
 
     public SurveyOverviewDTO(Long id,
                              String name,
@@ -35,7 +35,7 @@ public class SurveyOverviewDTO extends AbstractDTO {
                              String accessId,
                              String participationId,
                              Long userId,
-                             String userName) {
+                             String creatorName) {
         super(id);
         this.name = name;
         this.description = description;
@@ -46,6 +46,6 @@ public class SurveyOverviewDTO extends AbstractDTO {
         this.accessId = accessId;
         this.participationId = participationId;
         this.userId = userId;
-        this.userName = userName;
+        this.creatorName = creatorName;
     }
 }
