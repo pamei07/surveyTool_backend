@@ -1,5 +1,6 @@
 package iks.surveytool.services;
 
+import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
@@ -20,6 +21,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -28,6 +30,7 @@ import java.util.Random;
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
+    private final AnswerService answerService;
     private final ModelMapper modelMapper;
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
@@ -211,6 +214,12 @@ public class SurveyService {
 
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO) {
+        ResponseEntity<List<AnswerDTO>> answers = answerService.processAnswersBySurveyId(surveyDTO.getId());
+        boolean alreadyAnswered = !Objects.requireNonNull(answers.getBody()).isEmpty();
+        if (alreadyAnswered) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Survey updatedSurvey = mapSurveyToEntity(surveyDTO);
         if (updatedSurvey.validate()) {
             Long id = updatedSurvey.getId();
