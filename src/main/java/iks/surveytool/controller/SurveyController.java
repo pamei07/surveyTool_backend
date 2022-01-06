@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
@@ -38,23 +39,26 @@ public class SurveyController {
         return surveyService.processOpenAccessSurveys();
     }
 
-    // TODO: Change parameter by which the Surveys are fetched
     @GetMapping("/users/{id}")
+    @RolesAllowed("surveytool-user")
     public ResponseEntity<List<SurveyOverviewDTO>> findSurveysByUserId(@PathVariable Long id) {
         return surveyService.processSurveyByUserId(id);
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("surveytool-user")
     public ResponseEntity<?> deleteSurveyById(@PathVariable Long id) {
         return surveyService.processDeletionOfSurveyById(id);
     }
 
     @PutMapping
+    @RolesAllowed("surveytool-user")
     public ResponseEntity<SurveyOverviewDTO> updateSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         return surveyService.processUpdateOfSurvey(surveyDTO);
     }
 
     @PatchMapping
+    @RolesAllowed("surveytool-user")
     public ResponseEntity<SurveyOverviewDTO> patchSurveyEndDate(@RequestBody SurveyEndDateDTO surveyEndDateDTO) {
         return surveyService.processPatchingSurveyEndDate(surveyEndDateDTO);
     }
