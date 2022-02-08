@@ -32,6 +32,7 @@ public class SurveyService {
     private final QuestionGroupRepository questionGroupRepository;
     private final AnswerService answerService;
     private final ModelMapper modelMapper;
+    private final Random random = new Random();
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
@@ -182,8 +183,7 @@ public class SurveyService {
     }
 
     private String generateHexSuffix() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(256);
+        int randomNumber = this.random.nextInt(256);
         return Integer.toHexString(randomNumber);
     }
 

@@ -144,6 +144,7 @@ public class MappingAssertions {
         assertEquals(answerDTO.getId(), answer.getId());
         assertEquals(answerDTO.getText(), answer.getText());
         assertEquals(answerDTO.getParticipantName(), answer.getParticipantName());
+        assertEquals(answerDTO.getParticipantId(), answer.getParticipantId());
 
         assertEquals(answerDTO.getUserId(), answer.getUser().getId());
 
@@ -163,6 +164,7 @@ public class MappingAssertions {
         assertEquals(answer.getId(), answerDTO.getId());
         assertEquals(answer.getText(), answerDTO.getText());
         assertEquals(answer.getParticipantName(), answerDTO.getParticipantName());
+        assertEquals(answer.getParticipantId(), answerDTO.getParticipantId());
 
         assertEquals(answer.getUser().getId(), answerDTO.getUserId());
 

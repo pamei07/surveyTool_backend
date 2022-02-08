@@ -14,6 +14,7 @@ public class AnswerBuilder {
         newAnswer.setQuestion(question);
         newAnswer.setCheckbox(checkbox);
         newAnswer.setParticipantName("Default Name");
+        newAnswer.setParticipantId("1234");
         return newAnswer;
     }
 }

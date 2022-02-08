@@ -13,22 +13,38 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
     private final AnswerRepository answerRepository;
     private final ModelMapper modelMapper;
+    private final Random random = new Random();
 
     public ResponseEntity<List<AnswerDTO>> processAnswerDTOs(AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
         List<Answer> answerList = mapAnswersToEntity(answerDTOList);
         if (validate(answerList)) {
+            generateParticipantId(answerList);
             List<Answer> savedAnswers = saveAnswers(answerList);
             List<AnswerDTO> savedAnswerDTOs = mapAnswersToDTO(savedAnswers);
             return ResponseEntity.ok(savedAnswerDTOs);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
+
+    private void generateParticipantId(List<Answer> answerList) {
+        Long questionId = answerList.get(0).getQuestion().getId();
+        List<String> participantIds = answerRepository.findParticipantIdsOfAnsweredSurvey(questionId);
+        String participantId = String.format("%04d", random.nextInt(10000));
+        while (participantIds.contains(participantId)) {
+            participantId = String.format("%04d", random.nextInt(10000));
+        }
+
+        for (Answer answer : answerList) {
+            answer.setParticipantId(participantId);
         }
     }
 
