@@ -48,6 +48,7 @@ public class SurveyController {
     @DeleteMapping("/{id}")
     @RolesAllowed("surveytool-user")
     public ResponseEntity<?> deleteSurveyById(@PathVariable Long id) {
+        // TODO: Check if user id is equal survey.userid
         return surveyService.processDeletionOfSurveyById(id);
     }
 
