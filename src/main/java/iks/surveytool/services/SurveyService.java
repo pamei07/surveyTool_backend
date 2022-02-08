@@ -5,9 +5,14 @@ import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.User;
 import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
@@ -30,6 +35,7 @@ import java.util.Random;
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
+    private final UserRepository userRepository;
     private final AnswerService answerService;
     private final ModelMapper modelMapper;
     private final Random random = new Random();
@@ -203,13 +209,27 @@ public class SurveyService {
         return surveyRepository.findSurveysByUserIdOrderByCreationTimeDesc(id);
     }
 
-    public ResponseEntity<?> processDeletionOfSurveyById(Long id) {
-        try {
-            surveyRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<?> processDeletionOfSurveyById(Long id, KeycloakAuthenticationToken token) {
+        Optional<Survey> surveyOptional = surveyRepository.findById(id);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+
+            KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+            AccessToken accessToken = principal.getKeycloakSecurityContext().getToken();
+            Optional<User> currentUser = userRepository.findUserByEmail(accessToken.getEmail());
+            if (currentUser.isPresent()) {
+                User user = currentUser.get();
+                if (Objects.equals(user.getId(), survey.getUser().getId())) {
+                    try {
+                        surveyRepository.deleteById(id);
+                        return ResponseEntity.status(HttpStatus.OK).build();
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                    }
+                }
+            }
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @Transactional

@@ -5,6 +5,7 @@ import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +48,8 @@ public class SurveyController {
 
     @DeleteMapping("/{id}")
     @RolesAllowed("surveytool-user")
-    public ResponseEntity<?> deleteSurveyById(@PathVariable Long id) {
-        // TODO: Check if user id is equal survey.userid
-        return surveyService.processDeletionOfSurveyById(id);
+    public ResponseEntity<?> deleteSurveyById(@PathVariable Long id, KeycloakAuthenticationToken token) {
+        return surveyService.processDeletionOfSurveyById(id, token);
     }
 
     @PutMapping
