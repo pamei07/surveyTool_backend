@@ -38,8 +38,6 @@ public class Answer extends AbstractEntity {
 
     public boolean validate() {
         if (this.participantName == null || this.question == null || (this.question.isHasCheckbox() && this.checkbox == null)) {
-            System.out.println(this.participantName);
-            System.out.println(this.question.getId());
             return false;
         }
         if (!this.question.isHasCheckbox() || this.checkbox.isHasTextField()) {
