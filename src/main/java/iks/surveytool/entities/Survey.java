@@ -35,7 +35,7 @@ public class Survey extends AbstractEntity {
     private String participationId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId", nullable = true)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
