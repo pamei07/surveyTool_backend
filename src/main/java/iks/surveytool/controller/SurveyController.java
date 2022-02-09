@@ -54,14 +54,16 @@ public class SurveyController {
 
     @PutMapping
     @RolesAllowed("surveytool-user")
-    public ResponseEntity<SurveyOverviewDTO> updateSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
-        return surveyService.processUpdateOfSurvey(surveyDTO);
+    public ResponseEntity<SurveyOverviewDTO> updateSurvey(@RequestBody CompleteSurveyDTO surveyDTO,
+                                                          KeycloakAuthenticationToken token) {
+        return surveyService.processUpdateOfSurvey(surveyDTO, token);
     }
 
     @PatchMapping
     @RolesAllowed("surveytool-user")
-    public ResponseEntity<SurveyOverviewDTO> patchSurveyEndDate(@RequestBody SurveyEndDateDTO surveyEndDateDTO) {
-        return surveyService.processPatchingSurveyEndDate(surveyEndDateDTO);
+    public ResponseEntity<SurveyOverviewDTO> patchSurveyEndDate(@RequestBody SurveyEndDateDTO surveyEndDateDTO,
+                                                                KeycloakAuthenticationToken token) {
+        return surveyService.processPatchingSurveyEndDate(surveyEndDateDTO, token);
     }
 
 }

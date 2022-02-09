@@ -215,7 +215,7 @@ public class SurveyService {
             Survey survey = surveyOptional.get();
 
             if (!checkIfUserAuthorizedForSurvey(token, survey)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
             return deleteSurveyById(id);
@@ -251,7 +251,8 @@ public class SurveyService {
     }
 
     @Transactional
-    public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO) {
+    public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO,
+                                                                   KeycloakAuthenticationToken token) {
         ResponseEntity<List<AnswerDTO>> answers = answerService.processAnswersBySurveyId(surveyDTO.getId());
         boolean alreadyAnswered = !Objects.requireNonNull(answers.getBody()).isEmpty();
         if (alreadyAnswered) {
@@ -259,19 +260,25 @@ public class SurveyService {
         }
 
         Survey updatedSurvey = mapSurveyToEntity(surveyDTO);
-        if (updatedSurvey.validate()) {
-            Long id = updatedSurvey.getId();
-            Optional<Survey> surveyOptional = surveyRepository.findById(id);
-            if (surveyOptional.isPresent()) {
-                Survey surveyToUpdate = surveyOptional.get();
-                updateSurvey(surveyToUpdate, updatedSurvey);
-                Survey savedSurvey = saveSurvey(surveyToUpdate);
-                SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-                return ResponseEntity.ok(completeSurveyDTO);
-            }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
+        if (!updatedSurvey.validate()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
+        Long id = updatedSurvey.getId();
+        Optional<Survey> surveyOptional = surveyRepository.findById(id);
+        if (surveyOptional.isPresent()) {
+            Survey surveyToUpdate = surveyOptional.get();
+
+            if (!checkIfUserAuthorizedForSurvey(token, surveyToUpdate)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            updateSurvey(surveyToUpdate, updatedSurvey);
+            Survey savedSurvey = saveSurvey(surveyToUpdate);
+            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+            return ResponseEntity.ok(completeSurveyDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -287,7 +294,8 @@ public class SurveyService {
         surveyToUpdate.setQuestionGroups(updatedSurvey.getQuestionGroups());
     }
 
-    public ResponseEntity<SurveyOverviewDTO> processPatchingSurveyEndDate(SurveyEndDateDTO surveyEndDateDTO) {
+    public ResponseEntity<SurveyOverviewDTO> processPatchingSurveyEndDate(SurveyEndDateDTO surveyEndDateDTO,
+                                                                          KeycloakAuthenticationToken token) {
         if (!surveyEndDateDTO.checkIfEndDateValid()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
@@ -296,6 +304,11 @@ public class SurveyService {
         Optional<Survey> surveyOptional = surveyRepository.findById(id);
         if (surveyOptional.isPresent()) {
             Survey surveyToUpdate = surveyOptional.get();
+
+            if (!checkIfUserAuthorizedForSurvey(token, surveyToUpdate)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
             surveyToUpdate.setEndDate(surveyEndDateDTO.getEndDate());
             Survey savedSurvey = saveSurvey(surveyToUpdate);
             SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
