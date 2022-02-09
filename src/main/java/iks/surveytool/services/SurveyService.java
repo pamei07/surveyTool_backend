@@ -214,22 +214,40 @@ public class SurveyService {
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
 
-            KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-            AccessToken accessToken = principal.getKeycloakSecurityContext().getToken();
-            Optional<User> currentUser = userRepository.findUserByEmail(accessToken.getEmail());
-            if (currentUser.isPresent()) {
-                User user = currentUser.get();
-                if (Objects.equals(user.getId(), survey.getUser().getId())) {
-                    try {
-                        surveyRepository.deleteById(id);
-                        return ResponseEntity.status(HttpStatus.OK).build();
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                    }
-                }
+            if (!checkIfUserAuthorizedForSurvey(token, survey)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
+
+            return deleteSurveyById(id);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    private ResponseEntity<Object> deleteSurveyById(Long id) {
+        try {
+            surveyRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    private boolean checkIfUserAuthorizedForSurvey(KeycloakAuthenticationToken token, Survey survey) {
+        KeycloakPrincipal<?> principal = (KeycloakPrincipal<?>) token.getPrincipal();
+        AccessToken accessToken = principal.getKeycloakSecurityContext().getToken();
+        Optional<User> currentUser = userRepository.findUserByEmail(accessToken.getEmail());
+        if (currentUser.isPresent()) {
+            User user = currentUser.get();
+            boolean authorized;
+            try {
+                authorized = Objects.equals(user.getId(), survey.getUser().getId());
+            } catch (NullPointerException exception) {
+                return false;
+            }
+            return authorized;
+        } else {
+            return false;
+        }
     }
 
     @Transactional
