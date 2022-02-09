@@ -1,11 +1,12 @@
 package iks.surveytool.services;
 
-import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyEndDateDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
+import iks.surveytool.entities.Answer;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.User;
+import iks.surveytool.repositories.AnswerRepository;
 import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.UserRepository;
@@ -36,7 +37,7 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
     private final UserRepository userRepository;
-    private final AnswerService answerService;
+    private final AnswerRepository answerRepository;
     private final ModelMapper modelMapper;
     private final Random random = new Random();
 
@@ -253,9 +254,8 @@ public class SurveyService {
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO,
                                                                    KeycloakAuthenticationToken token) {
-        ResponseEntity<List<AnswerDTO>> answers = answerService.processAnswersBySurveyId(surveyDTO.getId());
-        boolean alreadyAnswered = !Objects.requireNonNull(answers.getBody()).isEmpty();
-        if (alreadyAnswered) {
+        List<Answer> answers = answerRepository.findAnswersBySurvey_Id(surveyDTO.getId());
+        if (!answers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
