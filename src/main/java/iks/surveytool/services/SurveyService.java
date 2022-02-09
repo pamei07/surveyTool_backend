@@ -210,7 +210,7 @@ public class SurveyService {
         return surveyRepository.findSurveysByUserIdOrderByCreationTimeDesc(id);
     }
 
-    public ResponseEntity<?> processDeletionOfSurveyById(Long id, KeycloakAuthenticationToken token) {
+    public ResponseEntity<Long> processDeletionOfSurveyById(Long id, KeycloakAuthenticationToken token) {
         Optional<Survey> surveyOptional = surveyRepository.findById(id);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -224,7 +224,7 @@ public class SurveyService {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    private ResponseEntity<Object> deleteSurveyById(Long id) {
+    private ResponseEntity<Long> deleteSurveyById(Long id) {
         try {
             surveyRepository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).build();

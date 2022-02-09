@@ -48,7 +48,7 @@ public class SurveyController {
 
     @DeleteMapping("/{id}")
     @RolesAllowed("surveytool-user")
-    public ResponseEntity<?> deleteSurveyById(@PathVariable Long id, KeycloakAuthenticationToken token) {
+    public ResponseEntity<Long> deleteSurveyById(@PathVariable Long id, KeycloakAuthenticationToken token) {
         return surveyService.processDeletionOfSurveyById(id, token);
     }
 
