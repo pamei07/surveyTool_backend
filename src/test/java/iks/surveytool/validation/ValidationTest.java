@@ -489,18 +489,6 @@ class ValidationTest {
     }
 
     @Test
-    @DisplayName("Failed validation - Answer missing user")
-    void answerMissingUser() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", null, question, null);
-
-        assertFalse(answer.validate());
-    }
-
-    @Test
     @DisplayName("Failed validation - Answer missing Checkbox")
     void answerMissingQuestion() {
         Question question = new QuestionBuilder()
