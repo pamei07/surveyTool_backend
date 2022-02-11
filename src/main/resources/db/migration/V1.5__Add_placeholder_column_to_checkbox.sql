@@ -1,0 +1,5 @@
+ALTER TABLE checkbox
+    ADD COLUMN placeholder VARCHAR(255) NULL;
+
+ALTER TABLE question
+    ALTER COLUMN text TYPE VARCHAR(500);
