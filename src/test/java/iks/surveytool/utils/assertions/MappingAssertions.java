@@ -69,6 +69,7 @@ public class MappingAssertions {
     private static void assertCheckboxDTO(CheckboxDTO checkboxDTO, Checkbox checkbox) {
         assertEquals(checkboxDTO.getText(), checkbox.getText());
         assertEquals(checkboxDTO.isHasTextField(), checkbox.isHasTextField());
+        assertEquals(checkboxDTO.getPlaceholder(), checkbox.getPlaceholder());
     }
 
     public static void assertSurvey(Survey survey, CompleteSurveyDTO surveyDTO) {
@@ -132,6 +133,7 @@ public class MappingAssertions {
     private static void assertCheckbox(Checkbox checkbox, CheckboxDTO checkboxDTO) {
         assertEquals(checkbox.getText(), checkboxDTO.getText());
         assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
+        assertEquals(checkbox.getPlaceholder(), checkboxDTO.getPlaceholder());
     }
 
     public static void assertAnswerDTOs(List<AnswerDTO> answerDTOs, List<Answer> answers) {

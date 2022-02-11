@@ -77,7 +77,7 @@ public class SurveyConverter {
         }
 
         private Checkbox toCheckboxEntity(CheckboxDTO checkboxDTO) {
-            return new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField());
+            return new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField(), checkboxDTO.getPlaceholder());
         }
     };
 

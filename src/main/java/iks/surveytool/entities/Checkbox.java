@@ -18,6 +18,7 @@ public class Checkbox extends AbstractEntity {
     private String text;
     @NotNull
     private boolean hasTextField;
+    private String placeholder;
 
     @ManyToOne
     @JoinColumn(name = "checkboxGroupId", nullable = false)
@@ -27,9 +28,10 @@ public class Checkbox extends AbstractEntity {
     @JoinColumn(name = "checkboxId")
     private List<Answer> answers;
 
-    public Checkbox(String text, boolean hasTextField) {
+    public Checkbox(String text, boolean hasTextField, String placeholder) {
         this.text = text;
         this.hasTextField = hasTextField;
+        this.placeholder = placeholder;
     }
 
     boolean validate() {

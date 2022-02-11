@@ -10,6 +10,7 @@ public class CheckboxBuilder {
         newCheckbox.setId(id);
         newCheckbox.setText(text);
         newCheckbox.setHasTextField(hasTextField);
+        newCheckbox.setPlaceholder("Default Text");
         return newCheckbox;
     }
 }
