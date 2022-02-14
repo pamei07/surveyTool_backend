@@ -325,7 +325,7 @@ public class SurveyService {
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO,
                                                                    KeycloakAuthenticationToken token) {
-        log.info("Process update of survey (id: {}, title: {})...", surveyDTO.getId(), surveyDTO.getName());
+        log.info("Process update of survey (id: {})...", surveyDTO.getId());
 
         List<Answer> answers = answerRepository.findAnswersBySurvey_Id(surveyDTO.getId());
         if (!answers.isEmpty()) {
@@ -361,8 +361,7 @@ public class SurveyService {
                 updateSurvey(surveyToUpdate, updatedSurvey);
                 Survey savedSurvey = saveSurvey(surveyToUpdate);
                 SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-                log.info("Successfully updated survey (id: {}, (new) title: {})",
-                        completeSurveyDTO.getId(), completeSurveyDTO.getName());
+                log.info("Successfully updated survey (id: {})", completeSurveyDTO.getId());
                 return ResponseEntity.ok(completeSurveyDTO);
             } catch (Exception e) {
                 log.error("Error while saving updated Survey/mapping Survey to SurveyDTO", e);
