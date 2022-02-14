@@ -23,12 +23,31 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     public ResponseEntity<UserDTO> processUserDTO(UserDTO userDTO) {
-        User newUser = modelMapper.map(userDTO, User.class);
+        log.info("Processing new user...");
+
+        User newUser;
+        try {
+            newUser = modelMapper.map(userDTO, User.class);
+        } catch (Exception e) {
+            log.error("Error while mapping UserDTO to User", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (newUser.validate()) {
-            User savedUser = saveUser(newUser);
-            UserDTO savedUserDTO = modelMapper.map(savedUser, UserDTO.class);
-            return ResponseEntity.ok(savedUserDTO);
+            log.info("New user is valid...");
+            try {
+                User savedUser = saveUser(newUser);
+                UserDTO savedUserDTO = modelMapper.map(savedUser, UserDTO.class);
+
+                log.info("Successfully created new user => id: {}, username: {}",
+                        savedUserDTO.getId(), savedUserDTO.getName());
+                return ResponseEntity.ok(savedUserDTO);
+            } catch (Exception e) {
+                log.error("Error while saving new user/mapping User to UserDTO.", e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
         } else {
+            log.error("New user is not valid: 422 - Unprocessable Entity");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
@@ -53,11 +72,24 @@ public class UserService {
         return userRepository.findParticipatingUsersBySurveyId(surveyId);
     }
 
+    // TODO: process User by Username rather than Email
     public ResponseEntity<UserDTO> processUserByEMail(String eMail) {
-        UserDTO userDTO = mapUserToDTOByEMail(eMail);
+        log.trace("Looking for user associated with: {} ...", eMail);
+
+        UserDTO userDTO;
+        try {
+            userDTO = mapUserToDTOByEMail(eMail);
+        } catch (Exception e) {
+            log.error("Error while mapping User to UserDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (userDTO != null) {
+            log.trace("Successfully fetched user by e-mail ({}) => id: {}, username: {}",
+                    userDTO.getEmail(), userDTO.getId(), userDTO.getName());
             return ResponseEntity.ok(userDTO);
         } else {
+            log.trace("Cannot find user associated with: {}", eMail);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

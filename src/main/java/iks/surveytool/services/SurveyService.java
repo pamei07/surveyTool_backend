@@ -44,44 +44,98 @@ public class SurveyService {
     private final Random random = new Random();
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
-        Survey newSurvey = mapSurveyToEntity(surveyDTO);
+        log.info("Processing new survey...");
+
+        Survey newSurvey;
+        try {
+            newSurvey = mapSurveyToEntity(surveyDTO);
+        } catch (Exception e) {
+            log.error("Error while mapping SurveyDTO to Survey", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (newSurvey.validate()) {
-            generateIds(newSurvey);
-            Survey savedSurvey = saveSurvey(newSurvey);
-            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-            return ResponseEntity.ok(completeSurveyDTO);
+            log.info("New survey is valid...");
+
+            try {
+                generateIds(newSurvey);
+                Survey savedSurvey = saveSurvey(newSurvey);
+                SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+
+                log.info("Successfully saved new survey => id: {}, title: {}",
+                        completeSurveyDTO.getId(), completeSurveyDTO.getName());
+                return ResponseEntity.ok(completeSurveyDTO);
+            } catch (Exception e) {
+                log.error("Error while saving new survey/mapping Survey to SurveyDTO", e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
         } else {
+            log.error("New survey is not valid: 422 - Unprocessable Entity");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId) {
-        SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
+        log.trace("Looking for survey by accessId: {}", accessId);
+
+        SurveyOverviewDTO surveyOverviewDTO;
+        try {
+            surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
+        } catch (Exception e) {
+            log.error("Error while mapping Survey to SurveyDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (surveyOverviewDTO != null) {
+            log.trace("Successfully fetched survey by accessId ({}) => id: {}, title: {}",
+                    surveyOverviewDTO.getAccessId(), surveyOverviewDTO.getId(), surveyOverviewDTO.getName());
             return ResponseEntity.ok(surveyOverviewDTO);
         } else {
+            log.trace("Cannot find survey with accessId: {}", accessId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
-        SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
+        log.trace("Looking for survey by participationId: {}", participationId);
+
+        SurveyOverviewDTO surveyDTO;
+        try {
+            surveyDTO = mapSurveyToDTOByParticipationId(participationId);
+        } catch (Exception e) {
+            log.error("Error while mapping Survey to SurveyDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (surveyDTO != null) {
             if (surveyDTO instanceof CompleteSurveyDTO) {
+                log.trace("Successfully fetched survey by participationId ({}) => id: {}, title: {}",
+                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
                 return ResponseEntity.ok(surveyDTO);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
+                log.trace("Successfully fetched survey by participationId ({}) (not within timeframe) => id: {}, title: {}",
+                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
             }
         } else {
+            log.trace("Cannot find survey with participationId: {}", participationId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
-        List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
-        return ResponseEntity.ok(openAccessSurveys);
+        log.trace("Looking for open access surveys...");
+
+        try {
+            List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
+            log.trace("Successfully fetched open access surveys. {} available.", openAccessSurveys.size());
+            return ResponseEntity.ok(openAccessSurveys);
+        } catch (Exception e) {
+            log.error("Error while mapping open access surveys to surveyDTOs", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     private Optional<Survey> findSurveyByParticipationId(String participationId) {
@@ -196,9 +250,18 @@ public class SurveyService {
         return Integer.toHexString(randomNumber);
     }
 
+    // TODO: rename method (surveyS)
     public ResponseEntity<List<SurveyOverviewDTO>> processSurveyByUserId(Long id) {
-        List<SurveyOverviewDTO> surveys = mapSurveysToDTOByUserId(id);
-        return ResponseEntity.ok(surveys);
+        log.trace("Looking for surveys by userId (id: {})...", id);
+
+        try {
+            List<SurveyOverviewDTO> surveys = mapSurveysToDTOByUserId(id);
+            log.trace("Successfully fetched surveys by userId ({}). {} available.", id, surveys.size());
+            return ResponseEntity.ok(surveys);
+        } catch (Exception e) {
+            log.error("Error while mapping open access surveys to surveyDTOs", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     private List<SurveyOverviewDTO> mapSurveysToDTOByUserId(Long id) {
@@ -213,24 +276,31 @@ public class SurveyService {
     }
 
     public ResponseEntity<Long> processDeletionOfSurveyById(Long id, KeycloakAuthenticationToken token) {
+        log.info("Process deletion of survey (id: {})...", id);
+
         Optional<Survey> surveyOptional = surveyRepository.findById(id);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
 
             if (!checkIfUserAuthorizedForSurvey(token, survey)) {
+                log.error("Current user not authorized to delete survey (id: {})", id);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
             return deleteSurveyById(id);
+        } else {
+            log.error("Cannot find survey (id: {})", id);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     private ResponseEntity<Long> deleteSurveyById(Long id) {
         try {
             surveyRepository.deleteById(id);
+            log.info("Successfully deleted survey (id: {}).", id);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
+            log.error("Error while deleting survey (id: {})", id, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -256,13 +326,25 @@ public class SurveyService {
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processUpdateOfSurvey(CompleteSurveyDTO surveyDTO,
                                                                    KeycloakAuthenticationToken token) {
+        log.info("Process update of survey (id: {}, title: {})...", surveyDTO.getId(), surveyDTO.getName());
+
         List<Answer> answers = answerRepository.findAnswersBySurvey_Id(surveyDTO.getId());
         if (!answers.isEmpty()) {
+            log.error("Cannot update survey. This survey has already been answered. (id: {}, title: {})",
+                    surveyDTO.getId(), surveyDTO.getName());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Survey updatedSurvey = mapSurveyToEntity(surveyDTO);
+        Survey updatedSurvey;
+        try {
+            updatedSurvey = mapSurveyToEntity(surveyDTO);
+        } catch (Exception e) {
+            log.error("Error while mapping SurveyDTO to Survey", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (!updatedSurvey.validate()) {
+            log.error("Updated survey is not valid - 422: Unprocessable Entity");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
@@ -272,14 +354,23 @@ public class SurveyService {
             Survey surveyToUpdate = surveyOptional.get();
 
             if (!checkIfUserAuthorizedForSurvey(token, surveyToUpdate)) {
+                log.error("Current user not authorized to update survey (id: {})", id);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            updateSurvey(surveyToUpdate, updatedSurvey);
-            Survey savedSurvey = saveSurvey(surveyToUpdate);
-            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-            return ResponseEntity.ok(completeSurveyDTO);
+            try {
+                updateSurvey(surveyToUpdate, updatedSurvey);
+                Survey savedSurvey = saveSurvey(surveyToUpdate);
+                SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+                log.info("Successfully updated survey (id: {}, (new) title: {})",
+                        completeSurveyDTO.getId(), completeSurveyDTO.getName());
+                return ResponseEntity.ok(completeSurveyDTO);
+            } catch (Exception e) {
+                log.error("Error while saving updated Survey/mapping Survey to SurveyDTO", e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
         } else {
+            log.error("Cannot find survey (id: {})", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -298,7 +389,10 @@ public class SurveyService {
 
     public ResponseEntity<SurveyOverviewDTO> processPatchingSurveyEndDate(SurveyEndDateDTO surveyEndDateDTO,
                                                                           KeycloakAuthenticationToken token) {
+        log.info("Process patch of endDate of survey (id: {})...", surveyEndDateDTO.getId());
+
         if (!surveyEndDateDTO.checkIfEndDateValid()) {
+            log.error("New endDate not valid - 422: Unprocessable Entity");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
@@ -308,14 +402,22 @@ public class SurveyService {
             Survey surveyToUpdate = surveyOptional.get();
 
             if (!checkIfUserAuthorizedForSurvey(token, surveyToUpdate)) {
+                log.error("Current user not authorized to update endDate of survey (id: {})", id);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            surveyToUpdate.setEndDate(surveyEndDateDTO.getEndDate());
-            Survey savedSurvey = saveSurvey(surveyToUpdate);
-            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-            return ResponseEntity.ok(completeSurveyDTO);
+            try {
+                surveyToUpdate.setEndDate(surveyEndDateDTO.getEndDate());
+                Survey savedSurvey = saveSurvey(surveyToUpdate);
+                SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+                log.info("Successfully updated endDate of survey (id: {})", id);
+                return ResponseEntity.ok(completeSurveyDTO);
+            } catch (Exception e) {
+                log.error("Error while saving updated Survey/mapping Survey to SurveyDTO", e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
         } else {
+            log.error("Cannot find survey (id: {})", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

@@ -25,14 +25,32 @@ public class AnswerService {
     private final Random random = new Random();
 
     public ResponseEntity<List<AnswerDTO>> processAnswerDTOs(AnswerDTO[] answerDTOs) {
+        log.info("Processing submitted answers...");
+
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
-        List<Answer> answerList = mapAnswersToEntity(answerDTOList);
+        List<Answer> answerList;
+        try {
+            answerList = mapAnswersToEntity(answerDTOList);
+        } catch (Exception e) {
+            log.error("Error while mapping answerDTOs to answers", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
         if (validate(answerList)) {
-            generateParticipantId(answerList);
-            List<Answer> savedAnswers = saveAnswers(answerList);
-            List<AnswerDTO> savedAnswerDTOs = mapAnswersToDTO(savedAnswers);
-            return ResponseEntity.ok(savedAnswerDTOs);
+            log.info("Submitted answers are valid...");
+
+            try {
+                generateParticipantId(answerList);
+                List<Answer> savedAnswers = saveAnswers(answerList);
+                List<AnswerDTO> savedAnswerDTOs = mapAnswersToDTO(savedAnswers);
+                log.info("Successfully saved submitted answers");
+                return ResponseEntity.ok(savedAnswerDTOs);
+            } catch (Exception e) {
+                log.error("Error while saving submitted answers/mapping answers to answerDTOs", e);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            }
         } else {
+            log.error("Submitted answers are not valid: 422 - Unprocessable Entity");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
@@ -65,8 +83,16 @@ public class AnswerService {
     }
 
     public ResponseEntity<List<AnswerDTO>> processAnswersByQuestionId(Long questionId) {
-        List<AnswerDTO> answerDTOs = mapAnswersToDTOByQuestionId(questionId);
-        return ResponseEntity.ok(answerDTOs);
+        log.trace("Looking for answers by questionId (id: {})...", questionId);
+
+        try {
+            List<AnswerDTO> answerDTOs = mapAnswersToDTOByQuestionId(questionId);
+            log.trace("Successfully fetched answers by questionId (id: {})", questionId);
+            return ResponseEntity.ok(answerDTOs);
+        } catch (Exception e) {
+            log.error("Error while mapping answers to answerDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     private List<AnswerDTO> mapAnswersToDTOByQuestionId(Long questionId) {
@@ -85,8 +111,16 @@ public class AnswerService {
     }
 
     public ResponseEntity<List<AnswerDTO>> processAnswersBySurveyId(Long surveyId) {
-        List<AnswerDTO> answerDTOs = mapAnswersToDTOBySurveyId(surveyId);
-        return ResponseEntity.ok(answerDTOs);
+        log.trace("Looking for answers by surveyId (id: {})...", surveyId);
+
+        try {
+            List<AnswerDTO> answerDTOs = mapAnswersToDTOBySurveyId(surveyId);
+            log.trace("Successfully fetched answers by surveyId (id: {})", surveyId);
+            return ResponseEntity.ok(answerDTOs);
+        } catch (Exception e) {
+            log.error("Error while mapping answers to answerDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     private List<AnswerDTO> mapAnswersToDTOBySurveyId(Long surveyId) {
