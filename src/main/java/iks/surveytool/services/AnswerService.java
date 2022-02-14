@@ -4,6 +4,7 @@ import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
 import iks.surveytool.repositories.AnswerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AnswerService {
     private final AnswerRepository answerRepository;
     private final ModelMapper modelMapper;

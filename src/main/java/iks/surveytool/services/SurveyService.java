@@ -11,6 +11,7 @@ import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
@@ -33,6 +34,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
