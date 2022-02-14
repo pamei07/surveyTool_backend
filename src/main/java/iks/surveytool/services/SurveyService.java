@@ -75,130 +75,8 @@ public class SurveyService {
         }
     }
 
-    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId) {
-        log.trace("Looking for survey by accessId: {}", accessId);
-
-        SurveyOverviewDTO surveyOverviewDTO;
-        try {
-            surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
-        } catch (Exception e) {
-            log.error("Error while mapping Survey to SurveyDTO", e);
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
-
-        if (surveyOverviewDTO != null) {
-            log.trace("Successfully fetched survey by accessId ({}) => id: {}, title: {}",
-                    surveyOverviewDTO.getAccessId(), surveyOverviewDTO.getId(), surveyOverviewDTO.getName());
-            return ResponseEntity.ok(surveyOverviewDTO);
-        } else {
-            log.trace("Cannot find survey with accessId: {}", accessId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
-        log.trace("Looking for survey by participationId: {}", participationId);
-
-        SurveyOverviewDTO surveyDTO;
-        try {
-            surveyDTO = mapSurveyToDTOByParticipationId(participationId);
-        } catch (Exception e) {
-            log.error("Error while mapping Survey to SurveyDTO", e);
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
-
-        if (surveyDTO != null) {
-            if (surveyDTO instanceof CompleteSurveyDTO) {
-                log.trace("Successfully fetched survey by participationId ({}) => id: {}, title: {}",
-                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
-                return ResponseEntity.ok(surveyDTO);
-            } else {
-                // If current time is not within start- and endDate: return survey without questions to fill information
-                // in front-end
-                log.trace("Successfully fetched survey by participationId ({}) (not within timeframe) => id: {}, title: {}",
-                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
-            }
-        } else {
-            log.trace("Cannot find survey with participationId: {}", participationId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
-        log.trace("Looking for open access surveys...");
-
-        try {
-            List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
-            log.trace("Successfully fetched open access surveys. {} available.", openAccessSurveys.size());
-            return ResponseEntity.ok(openAccessSurveys);
-        } catch (Exception e) {
-            log.error("Error while mapping open access surveys to surveyDTOs", e);
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
-    }
-
-    private Optional<Survey> findSurveyByParticipationId(String participationId) {
-        return surveyRepository.findSurveyByParticipationId(participationId);
-    }
-
-    private Optional<Survey> findSurveyByAccessId(String accessId) {
-        return surveyRepository.findSurveyByAccessId(accessId);
-    }
-
-    private List<Survey> findSurveysByOpenAccessIsTrue() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
-    }
-
-    private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
-        return modelMapper.map(savedSurvey, CompleteSurveyDTO.class);
-    }
-
-    private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId) {
-        Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
-        if (surveyOptional.isPresent()) {
-            Survey survey = surveyOptional.get();
-            return modelMapper.map(survey, CompleteSurveyDTO.class);
-        }
-        return null;
-    }
-
-    private SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
-        Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
-        if (surveyOptional.isPresent()) {
-            Survey survey = surveyOptional.get();
-            ZoneId berlinTime = ZoneId.of("Europe/Berlin");
-            LocalDateTime surveyStartDate = survey.getStartDate();
-            ZonedDateTime zonedStartDate = ZonedDateTime.of(surveyStartDate, berlinTime);
-            LocalDateTime surveyEndDate = survey.getEndDate();
-            ZonedDateTime zonedEndDate = ZonedDateTime.of(surveyEndDate, berlinTime);
-            ZonedDateTime currentDateTime = ZonedDateTime.now(berlinTime);
-            if (currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
-                return modelMapper.map(survey, CompleteSurveyDTO.class);
-            } else {
-                // If current time is not within start- and endDate: return survey without questions to fill information
-                // in front-end
-                return modelMapper.map(survey, SurveyOverviewDTO.class);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
-        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
-        Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {
-        }.getType();
-        return modelMapper.map(openAccessSurveys, surveyOverviewList);
-    }
-
     private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
         return modelMapper.map(surveyDTO, Survey.class);
-    }
-
-    private Survey saveSurvey(Survey survey) {
-        return surveyRepository.save(survey);
     }
 
     private void generateIds(Survey survey) {
@@ -250,8 +128,129 @@ public class SurveyService {
         return Integer.toHexString(randomNumber);
     }
 
-    // TODO: rename method (surveyS)
-    public ResponseEntity<List<SurveyOverviewDTO>> processSurveyByUserId(Long id) {
+    private Survey saveSurvey(Survey survey) {
+        return surveyRepository.save(survey);
+    }
+
+    private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
+        return modelMapper.map(savedSurvey, CompleteSurveyDTO.class);
+    }
+
+    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId) {
+        log.trace("Looking for survey by accessId: {}", accessId);
+
+        SurveyOverviewDTO surveyOverviewDTO;
+        try {
+            surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
+        } catch (Exception e) {
+            log.error("Error while mapping Survey to SurveyDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
+        if (surveyOverviewDTO != null) {
+            log.trace("Successfully fetched survey by accessId ({}) => id: {}, title: {}",
+                    surveyOverviewDTO.getAccessId(), surveyOverviewDTO.getId(), surveyOverviewDTO.getName());
+            return ResponseEntity.ok(surveyOverviewDTO);
+        } else {
+            log.trace("Cannot find survey with accessId: {}", accessId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId) {
+        Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            return modelMapper.map(survey, CompleteSurveyDTO.class);
+        }
+        return null;
+    }
+
+    private Optional<Survey> findSurveyByAccessId(String accessId) {
+        return surveyRepository.findSurveyByAccessId(accessId);
+    }
+
+    public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
+        log.trace("Looking for survey by participationId: {}", participationId);
+
+        SurveyOverviewDTO surveyDTO;
+        try {
+            surveyDTO = mapSurveyToDTOByParticipationId(participationId);
+        } catch (Exception e) {
+            log.error("Error while mapping Survey to SurveyDTO", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+
+        if (surveyDTO != null) {
+            if (surveyDTO instanceof CompleteSurveyDTO) {
+                log.trace("Successfully fetched survey by participationId ({}) => id: {}, title: {}",
+                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
+                return ResponseEntity.ok(surveyDTO);
+            } else {
+                // If current time is not within start- and endDate: return survey without questions to fill information
+                // in front-end
+                log.trace("Successfully fetched survey by participationId ({}) (not within timeframe) => id: {}, title: {}",
+                        surveyDTO.getAccessId(), surveyDTO.getId(), surveyDTO.getName());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
+            }
+        } else {
+            log.trace("Cannot find survey with participationId: {}", participationId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    private SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
+        Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            ZoneId berlinTime = ZoneId.of("Europe/Berlin");
+            LocalDateTime surveyStartDate = survey.getStartDate();
+            ZonedDateTime zonedStartDate = ZonedDateTime.of(surveyStartDate, berlinTime);
+            LocalDateTime surveyEndDate = survey.getEndDate();
+            ZonedDateTime zonedEndDate = ZonedDateTime.of(surveyEndDate, berlinTime);
+            ZonedDateTime currentDateTime = ZonedDateTime.now(berlinTime);
+            if (currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
+                return modelMapper.map(survey, CompleteSurveyDTO.class);
+            } else {
+                // If current time is not within start- and endDate: return survey without questions to fill information
+                // in front-end
+                return modelMapper.map(survey, SurveyOverviewDTO.class);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private Optional<Survey> findSurveyByParticipationId(String participationId) {
+        return surveyRepository.findSurveyByParticipationId(participationId);
+    }
+
+    public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
+        log.trace("Looking for open access surveys...");
+
+        try {
+            List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
+            log.trace("Successfully fetched open access surveys. {} available.", openAccessSurveys.size());
+            return ResponseEntity.ok(openAccessSurveys);
+        } catch (Exception e) {
+            log.error("Error while mapping open access surveys to surveyDTOs", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
+
+    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
+        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
+        Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {
+        }.getType();
+        return modelMapper.map(openAccessSurveys, surveyOverviewList);
+    }
+
+    private List<Survey> findSurveysByOpenAccessIsTrue() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
+    }
+
+    public ResponseEntity<List<SurveyOverviewDTO>> processSurveysByUserId(Long id) {
         log.trace("Looking for surveys by userId (id: {})...", id);
 
         try {

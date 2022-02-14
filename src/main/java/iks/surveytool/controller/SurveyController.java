@@ -43,7 +43,7 @@ public class SurveyController {
     @GetMapping("/users/{id}")
     @RolesAllowed("surveytool-user")
     public ResponseEntity<List<SurveyOverviewDTO>> findSurveysByUserId(@PathVariable Long id) {
-        return surveyService.processSurveyByUserId(id);
+        return surveyService.processSurveysByUserId(id);
     }
 
     @DeleteMapping("/{id}")
