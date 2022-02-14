@@ -31,8 +31,6 @@ dependencies {
     implementation 'org.modelmapper.extensions:modelmapper-spring:2.4.4'
     implementation 'org.flywaydb:flyway-core:8.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.22'
-    compileOnly 'org.keycloak:keycloak-server-spi:16.1.0'
-    compileOnly 'org.keycloak:keycloak-server-spi-private:16.1.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.1'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.1'
