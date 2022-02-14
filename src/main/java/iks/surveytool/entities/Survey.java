@@ -40,6 +40,7 @@ public class Survey extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "surveyId")
+    @OrderBy("id")
     private List<QuestionGroup> questionGroups;
 
     public Survey(String name,
