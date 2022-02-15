@@ -2,24 +2,66 @@ package iks.surveytool.mapping;
 
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
+import iks.surveytool.repositories.CheckboxRepository;
+import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.UserRepository;
 import iks.surveytool.utils.assertions.MappingAssertions;
 import iks.surveytool.utils.builder.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Testcontainers
 @DisplayName("Testing Mapper")
-public class MappingTest {
+class MappingTest {
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    /**
+     * Fill database as SurveyConverter and AnswerConverter retrieve objects from db to convert DTOs into DAOs
+     */
+    @BeforeAll
+    static void fillDatabase(@Autowired UserRepository userRepository,
+                             @Autowired SurveyRepository surveyRepository,
+                             @Autowired CheckboxRepository checkboxRepository) {
+        User user1 = new UserBuilder().createUser(1L, "Test Person", "user1@default.de");
+        User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
+        userRepository.saveAll(List.of(user1, user2));
+
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, false, 0, 2);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox));
+
+        Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, false);
+        Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, true);
+        question2.setCheckboxGroup(checkboxGroup);
+        checkboxGroup.setQuestion(question2);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Questions");
+        questionGroupWithQuestion.setQuestions(List.of(question1, question2));
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey init", user1);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        surveyRepository.save(survey);
+    }
 
     @Test
     @DisplayName("Survey to CompleteSurveyDTO")
@@ -60,53 +102,42 @@ public class MappingTest {
     @DisplayName("CompleteSurveyDTO to Survey")
     void mapSurveyDTOtoEntity() {
         CheckboxDTO firstCheckboxDTO = new CheckboxDTO();
-        firstCheckboxDTO.setId(1L);
         firstCheckboxDTO.setText("First Checkbox DTO");
         firstCheckboxDTO.setHasTextField(false);
         CheckboxDTO secondCheckboxDTO = new CheckboxDTO();
-        secondCheckboxDTO.setId(2L);
         secondCheckboxDTO.setText("Second Checkbox DTO");
         secondCheckboxDTO.setHasTextField(true);
 
         CheckboxGroupDTO checkboxGroupDTO = new CheckboxGroupDTO();
-        checkboxGroupDTO.setId(1L);
         checkboxGroupDTO.setMultipleSelect(false);
         checkboxGroupDTO.setCheckboxes(List.of(firstCheckboxDTO, secondCheckboxDTO));
 
         QuestionDTO firstQuestionDTO = new QuestionDTO();
-        firstQuestionDTO.setId(1L);
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
         firstQuestionDTO.setHasCheckbox(true);
         firstQuestionDTO.setCheckboxGroup(checkboxGroupDTO);
 
         QuestionDTO secondQuestionDTO = new QuestionDTO();
-        secondQuestionDTO.setId(1L);
         secondQuestionDTO.setText("Test Text Question");
         secondQuestionDTO.setRequired(true);
         secondQuestionDTO.setHasCheckbox(false);
 
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();
-        questionGroupDTO.setId(1L);
         questionGroupDTO.setTitle("Test QuestionGroup");
         questionGroupDTO.setQuestions(List.of(firstQuestionDTO, secondQuestionDTO));
 
         CompleteSurveyDTO surveyDTO = new CompleteSurveyDTO();
-        surveyDTO.setId(1L);
         surveyDTO.setName("Test Survey");
         surveyDTO.setStartDate(LocalDateTime.of(2050, 1, 1, 12, 0));
         surveyDTO.setEndDate(surveyDTO.getStartDate().plusWeeks(1L));
         surveyDTO.setOpenAccess(false);
         surveyDTO.setAnonymousParticipation(true);
-        surveyDTO.setAccessId("Dummy String");
-        surveyDTO.setParticipationId("Dummy String");
         surveyDTO.setUserId(1L);
         surveyDTO.setCreatorName("Max Mustermann");
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
-        System.out.println(surveyConverted.getUser().getId());
-        System.out.println(surveyConverted.getUser().getName());
 
         MappingAssertions.assertSurvey(surveyConverted, surveyDTO);
     }
@@ -129,9 +160,7 @@ public class MappingTest {
                 .createQuestion(2L, "Test Question", false, true);
         secondQuestion.setCheckboxGroup(checkboxGroup);
 
-        User user = new User();
-        user.setId(1L);
-        user.setName("Test User");
+        User user = new UserBuilder().createUser(2L, "Test Person #2");
 
         Answer firstAnswer = new AnswerBuilder()
                 .createAnswer(1L, "Test Answer", user, firstQuestion, null);
@@ -152,14 +181,12 @@ public class MappingTest {
     void mapAnswerDTOsToAnswers() {
         AnswerDTO firstAnswerDTO = new AnswerDTO();
         firstAnswerDTO.setText("Text");
-        firstAnswerDTO.setUserId(1L);
+        firstAnswerDTO.setUserId(2L);
         firstAnswerDTO.setParticipantName("Test User");
-        firstAnswerDTO.setParticipantId("1234");
         firstAnswerDTO.setQuestionId(1L);
         AnswerDTO secondAnswerDTO = new AnswerDTO();
-        secondAnswerDTO.setUserId(1L);
+        secondAnswerDTO.setUserId(2L);
         secondAnswerDTO.setParticipantName("Test User");
-        secondAnswerDTO.setParticipantId("4321");
         secondAnswerDTO.setQuestionId(2L);
         secondAnswerDTO.setCheckboxId(1L);
 
