@@ -17,4 +17,14 @@ public class UserBuilder {
         newUser.setEmail(email);
         return newUser;
     }
+
+    public User createUser(Long id, String name, String email) {
+        User newUser = new User();
+        newUser.setId(id);
+        newUser.setName(name);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setEmail(email);
+        return newUser;
+    }
 }

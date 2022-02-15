@@ -15,7 +15,8 @@ public class SurveyBuilder {
     LocalDateTime endDate = startDate.plusWeeks(1L);
     boolean openAccess = false;
     boolean anonymousParticipation = false;
-    String accessId = "Test ID";
+    String accessId = "Test AccessID";
+    String participationId = "Test ParticipationId";
     URL link;
 
     public Survey createDefaultSurvey() {
@@ -55,6 +56,7 @@ public class SurveyBuilder {
         newSurvey.setEndDate(endDate);
         newSurvey.setOpenAccess(openAccess);
         newSurvey.setAccessId(accessId);
+        newSurvey.setParticipationId(participationId);
         newSurvey.setAnonymousParticipation(anonymousParticipation);
         newSurvey.setQuestionGroups(new ArrayList<>());
     }

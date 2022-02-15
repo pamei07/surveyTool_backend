@@ -14,4 +14,14 @@ public class QuestionBuilder {
         newQuestion.setHasCheckbox(hasCheckbox);
         return newQuestion;
     }
+
+    public Question createQuestion(String text,
+                                   boolean required,
+                                   boolean hasCheckbox) {
+        Question newQuestion = new Question();
+        newQuestion.setText(text);
+        newQuestion.setRequired(required);
+        newQuestion.setHasCheckbox(hasCheckbox);
+        return newQuestion;
+    }
 }
