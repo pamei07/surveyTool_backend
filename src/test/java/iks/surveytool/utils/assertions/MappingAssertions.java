@@ -20,7 +20,9 @@ public class MappingAssertions {
         assertEquals(surveyDTO.getParticipationId(), survey.getParticipationId());
         assertEquals(surveyDTO.getCreatorName(), survey.getCreatorName());
 
-        assertEquals(surveyDTO.getUserId(), survey.getUser().getId());
+        if (survey.getUser() != null) {
+            assertEquals(surveyDTO.getUserId(), survey.getUser().getId());
+        }
 
         List<QuestionGroupDTO> questionGroupDTOs = surveyDTO.getQuestionGroups();
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
@@ -84,7 +86,9 @@ public class MappingAssertions {
         assertEquals(survey.getParticipationId(), surveyDTO.getParticipationId());
         assertEquals(survey.getCreatorName(), surveyDTO.getCreatorName());
 
-        assertEquals(survey.getUser().getId(), surveyDTO.getUserId());
+        if (survey.getUser() != null) {
+            assertEquals(survey.getUser().getId(), surveyDTO.getUserId());
+        }
 
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
         List<QuestionGroupDTO> questionGroupDTOs = surveyDTO.getQuestionGroups();
@@ -148,12 +152,17 @@ public class MappingAssertions {
         assertEquals(answerDTO.getParticipantName(), answer.getParticipantName());
         assertEquals(answerDTO.getParticipantId(), answer.getParticipantId());
 
-        assertEquals(answerDTO.getUserId(), answer.getUser().getId());
+        if (answer.getUser() != null) {
+            assertEquals(answerDTO.getUserId(), answer.getUser().getId());
+        }
 
         if (answer.getCheckbox() != null) {
             assertEquals(answerDTO.getCheckboxId(), answer.getCheckbox().getId());
         }
-        assertEquals(answerDTO.getQuestionId(), answer.getQuestion().getId());
+
+        if (answer.getQuestion() != null) {
+            assertEquals(answerDTO.getQuestionId(), answer.getQuestion().getId());
+        }
     }
 
     public static void assertAnswers(List<Answer> answers, List<AnswerDTO> answerDTOs) {
@@ -166,14 +175,18 @@ public class MappingAssertions {
         assertEquals(answer.getId(), answerDTO.getId());
         assertEquals(answer.getText(), answerDTO.getText());
         assertEquals(answer.getParticipantName(), answerDTO.getParticipantName());
-        assertEquals(answer.getParticipantId(), answerDTO.getParticipantId());
 
-        assertEquals(answer.getUser().getId(), answerDTO.getUserId());
+        if (answer.getUser() != null) {
+            assertEquals(answer.getUser().getId(), answerDTO.getUserId());
+        }
 
-        if (answerDTO.getCheckboxId() != null) {
+        if (answer.getCheckbox() != null) {
             assertEquals(answer.getCheckbox().getId(), answerDTO.getCheckboxId());
         }
-        assertEquals(answer.getQuestion().getId(), answerDTO.getQuestionId());
+
+        if (answer.getQuestion() != null) {
+            assertEquals(answer.getQuestion().getId(), answerDTO.getQuestionId());
+        }
     }
 
     public static void assertUserDTO(UserDTO userDTO, User user) {
