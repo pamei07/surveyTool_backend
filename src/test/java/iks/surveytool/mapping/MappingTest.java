@@ -2,7 +2,6 @@ package iks.surveytool.mapping;
 
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.CheckboxRepository;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.UserRepository;
 import iks.surveytool.utils.assertions.MappingAssertions;
@@ -33,8 +32,7 @@ class MappingTest {
      */
     @BeforeAll
     static void fillDatabase(@Autowired UserRepository userRepository,
-                             @Autowired SurveyRepository surveyRepository,
-                             @Autowired CheckboxRepository checkboxRepository) {
+                             @Autowired SurveyRepository surveyRepository) {
         User user1 = new UserBuilder().createUser(1L, "Test Person", "user1@default.de");
         User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
         userRepository.saveAll(List.of(user1, user2));
