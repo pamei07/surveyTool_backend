@@ -5,16 +5,9 @@ import iks.surveytool.entities.CheckboxGroup;
 import java.util.ArrayList;
 
 public class CheckboxGroupBuilder {
-    public CheckboxGroup createCheckboxGroup(Long id,
-                                             boolean multipleSelect,
-                                             int minSelect,
-                                             int maxSelect) {
-        CheckboxGroup newCheckboxGroup = new CheckboxGroup();
+    public CheckboxGroup createCheckboxGroup(Long id, boolean multipleSelect, int minSelect, int maxSelect) {
+        CheckboxGroup newCheckboxGroup = new CheckboxGroup(multipleSelect, minSelect, maxSelect, new ArrayList<>());
         newCheckboxGroup.setId(id);
-        newCheckboxGroup.setMultipleSelect(multipleSelect);
-        newCheckboxGroup.setMinSelect(minSelect);
-        newCheckboxGroup.setMaxSelect(maxSelect);
-        newCheckboxGroup.setCheckboxes(new ArrayList<>());
         return newCheckboxGroup;
     }
 }

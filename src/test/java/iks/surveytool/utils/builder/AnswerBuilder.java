@@ -7,14 +7,12 @@ import iks.surveytool.entities.User;
 
 public class AnswerBuilder {
     public Answer createAnswer(Long id, String text, User user, Question question, Checkbox checkbox) {
-        Answer newAnswer = new Answer();
+        Answer newAnswer = new Answer(text, "Default ParticipantName");
         newAnswer.setId(id);
-        newAnswer.setText(text);
+        newAnswer.setParticipantId("1234");
         newAnswer.setUser(user);
         newAnswer.setQuestion(question);
         newAnswer.setCheckbox(checkbox);
-        newAnswer.setParticipantName("Default Name");
-        newAnswer.setParticipantId("1234");
         return newAnswer;
     }
 }

@@ -3,7 +3,6 @@ package iks.surveytool.utils.builder;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.User;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -17,7 +16,6 @@ public class SurveyBuilder {
     boolean anonymousParticipation = false;
     String accessId = "Test AccessID";
     String participationId = "Test ParticipationId";
-    URL link;
 
     public Survey createDefaultSurvey() {
         Survey newSurvey = new Survey();
@@ -29,8 +27,7 @@ public class SurveyBuilder {
         return newSurvey;
     }
 
-    public Survey createSurveyWithDefaultDate(Long id,
-                                              String name) {
+    public Survey createSurveyWithDefaultDate(Long id, String name) {
         Survey newSurvey = new Survey();
         newSurvey.setId(id);
         newSurvey.setName(name);
@@ -38,9 +35,7 @@ public class SurveyBuilder {
         return newSurvey;
     }
 
-    public Survey createSurveyWithUserAndDefaultDate(Long id,
-                                                     String name,
-                                                     User user) {
+    public Survey createSurveyWithUserAndDefaultDate(Long id, String name, User user) {
         Survey newSurvey = new Survey();
         newSurvey.setId(id);
         newSurvey.setName(name);

@@ -3,25 +3,9 @@ package iks.surveytool.utils.builder;
 import iks.surveytool.entities.Question;
 
 public class QuestionBuilder {
-    public Question createQuestion(Long id,
-                                   String text,
-                                   boolean required,
-                                   boolean hasCheckbox) {
-        Question newQuestion = new Question();
+    public Question createQuestion(Long id, String text, boolean required, boolean hasCheckbox) {
+        Question newQuestion = new Question(text, required, hasCheckbox);
         newQuestion.setId(id);
-        newQuestion.setText(text);
-        newQuestion.setRequired(required);
-        newQuestion.setHasCheckbox(hasCheckbox);
-        return newQuestion;
-    }
-
-    public Question createQuestion(String text,
-                                   boolean required,
-                                   boolean hasCheckbox) {
-        Question newQuestion = new Question();
-        newQuestion.setText(text);
-        newQuestion.setRequired(required);
-        newQuestion.setHasCheckbox(hasCheckbox);
         return newQuestion;
     }
 }
