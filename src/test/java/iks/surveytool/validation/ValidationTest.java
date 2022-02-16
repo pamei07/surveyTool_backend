@@ -252,16 +252,9 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - minSelect > maxSelect")
     void minSelectGreaterThanMaxSelect() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, true, 3, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
@@ -283,16 +276,9 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - minSelect < 0")
     void minSelectLessThanZero() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, true, -1, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
@@ -314,16 +300,9 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - maxSelect < 2")
     void maxSelectLessThanTwo() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, true, 0, 1);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
@@ -376,16 +355,9 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Question required but minSelect = 0")
     void requiredButMinSelectZero() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, true, 0, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", true, true);
@@ -407,18 +379,9 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - creatorName missing")
     void surveyMissingUser() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-        Checkbox fourthCheckbox = new CheckboxBuilder()
-                .createCheckbox(4L, "Fourth Test Checkbox", false);
-
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, true, 1, 3);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfFourValidCheckboxes());
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
@@ -440,32 +403,8 @@ class ValidationTest {
     @Test
     @DisplayName("Successful validation - Complete survey")
     void surveyIsComplete() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-        Checkbox fourthCheckbox = new CheckboxBuilder()
-                .createCheckbox(4L, "Fourth Test Checkbox", false);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 1, 3);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
         User user = new UserBuilder().createUser(1L, "Test Person");
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+        Survey survey = new SurveyBuilder().createCompleteAndValidSurvey(user);
 
         assertTrue(survey.validate());
     }
@@ -473,8 +412,7 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - User missing name")
     void userMissingName() {
-        User user = new UserBuilder()
-                .createUser(1L, null);
+        User user = new UserBuilder().createUser(1L, null);
 
         assertFalse(user.validate());
     }
@@ -482,8 +420,7 @@ class ValidationTest {
     @Test
     @DisplayName("Successful validation - User")
     void userIsComplete() {
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        User user = new UserBuilder().createUser(1L, "Test User");
 
         assertTrue(user.validate());
     }

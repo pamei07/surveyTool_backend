@@ -37,59 +37,14 @@ class MappingTest {
         User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
         userRepository.saveAll(List.of(user1, user2));
 
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, false, 0, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox));
-
-        Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, false);
-        Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, true);
-        question2.setCheckboxGroup(checkboxGroup);
-        checkboxGroup.setQuestion(question2);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Questions");
-        questionGroupWithQuestion.setQuestions(List.of(question1, question2));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey init", user1);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        surveyRepository.save(survey);
+        surveyRepository.save(new SurveyBuilder().createCompleteAndValidSurvey(user1));
     }
 
     @Test
     @DisplayName("Survey to CompleteSurveyDTO")
     void mapSurveyToDTO() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-        Checkbox fourthCheckbox = new CheckboxBuilder()
-                .createCheckbox(4L, "Fourth Test Checkbox", false);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 1, 3);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
         User user = new UserBuilder().createUser(1L, "Test Person");
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+        Survey survey = new SurveyBuilder().createCompleteAndValidSurvey(user);
 
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
 

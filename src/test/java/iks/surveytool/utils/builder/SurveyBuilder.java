@@ -1,10 +1,10 @@
 package iks.surveytool.utils.builder;
 
-import iks.surveytool.entities.Survey;
-import iks.surveytool.entities.User;
+import iks.surveytool.entities.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SurveyBuilder {
 
@@ -54,5 +54,25 @@ public class SurveyBuilder {
         newSurvey.setParticipationId(participationId);
         newSurvey.setAnonymousParticipation(anonymousParticipation);
         newSurvey.setQuestionGroups(new ArrayList<>());
+    }
+
+    public Survey createCompleteAndValidSurvey(User user) {
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 1, 3);
+        checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfFourValidCheckboxes());
+
+        Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, false);
+        Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, true);
+        question2.setCheckboxGroup(checkboxGroup);
+        checkboxGroup.setQuestion(question2);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Questions");
+        questionGroupWithQuestion.setQuestions(List.of(question1, question2));
+
+        Survey survey = this.createSurveyWithUserAndDefaultDate(1L, "Complete Survey init", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        return survey;
     }
 }
