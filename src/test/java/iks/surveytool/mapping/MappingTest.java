@@ -28,7 +28,10 @@ class MappingTest {
     private ModelMapper modelMapper;
 
     /**
-     * Fill database as SurveyConverter and AnswerConverter retrieve objects from db to convert DTOs into DAOs
+     * Fill database as SurveyConverter and AnswerConverter retrieve objects from db to convert DTOs into DAOs:
+     * Question #1: id = 1L, hasCheckbox = false
+     * Question #2: id = 2L, hasCheckbox = true
+     * => Checkbox #1-#4: id = 1L-4L, #2 & #3: hasTextField = true
      */
     @BeforeAll
     static void fillDatabase(@Autowired UserRepository userRepository,
