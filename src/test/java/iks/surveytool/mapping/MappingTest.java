@@ -95,7 +95,7 @@ class MappingTest {
 
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
 
-        MappingAssertions.assertCompleteSurveyDTO(surveyDTO, survey);
+        MappingAssertions.assertSurveyMapping(survey, surveyDTO);
     }
 
     @Test
@@ -139,7 +139,7 @@ class MappingTest {
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
 
-        MappingAssertions.assertSurvey(surveyConverted, surveyDTO);
+        MappingAssertions.assertSurveyMapping(surveyConverted, surveyDTO);
     }
 
     @Test
@@ -173,7 +173,7 @@ class MappingTest {
         }.getType();
         List<AnswerDTO> answerDTOList = modelMapper.map(answers, answerDTOListType);
 
-        MappingAssertions.assertAnswerDTOs(answerDTOList, answers);
+        MappingAssertions.assertAnswerMapping(answers, answerDTOList);
     }
 
     @Test
@@ -196,7 +196,7 @@ class MappingTest {
         }.getType();
         List<Answer> answers = modelMapper.map(answerDTOs, answerListType);
 
-        MappingAssertions.assertAnswers(answers, answerDTOs);
+        MappingAssertions.assertAnswerMapping(answers, answerDTOs);
     }
 
     @Test
@@ -207,7 +207,7 @@ class MappingTest {
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
-        MappingAssertions.assertUserDTO(userDTO, user);
+        MappingAssertions.assertUserMapping(user, userDTO);
     }
 
     @Test
@@ -219,7 +219,7 @@ class MappingTest {
 
         User user = modelMapper.map(userDTO, User.class);
 
-        MappingAssertions.assertUser(user, userDTO);
+        MappingAssertions.assertUserMapping(user, userDTO);
     }
 
 }
