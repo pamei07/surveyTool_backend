@@ -6,13 +6,10 @@ import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,30 +51,6 @@ public class UserService {
 
     private User saveUser(User newUser) {
         return userRepository.save(newUser);
-    }
-
-    public ResponseEntity<List<UserDTO>> processParticipatingUsersBySurveyId(Long surveyId) {
-        log.trace("Looking for participating users by surveyId (id: {})...", surveyId);
-
-        try {
-            List<UserDTO> users = mapParticipatingUsersToDTOBySurveyId(surveyId);
-            log.trace("Successfully fetched participating users by surveyId (id: {}).", surveyId);
-            return ResponseEntity.ok(users);
-        } catch (Exception e) {
-            log.error("Error while mapping users to userDTOs", e);
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
-    }
-
-    private List<UserDTO> mapParticipatingUsersToDTOBySurveyId(Long surveyId) {
-        List<User> users = findParticipatingUsersBySurveyId(surveyId);
-        Type userDTOList = new TypeToken<List<UserDTO>>() {
-        }.getType();
-        return modelMapper.map(users, userDTOList);
-    }
-
-    private List<User> findParticipatingUsersBySurveyId(Long surveyId) {
-        return userRepository.findParticipatingUsersBySurveyId(surveyId);
     }
 
     // TODO: process User by Username rather than Email
