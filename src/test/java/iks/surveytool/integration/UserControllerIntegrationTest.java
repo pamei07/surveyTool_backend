@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@DisplayName("Testing User-Integration")
 class UserControllerIntegrationTest {
 
     @Autowired
