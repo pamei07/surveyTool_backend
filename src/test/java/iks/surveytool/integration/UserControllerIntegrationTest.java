@@ -39,7 +39,59 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Successful POST-Mapping - User created")
     void createUser() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName("Test Username");
+        userDTO.setFirstName("Vorname");
+        userDTO.setLastName("Nachname");
+        userDTO.setEmail("mail@mail.com");
+
+        ResponseEntity<UserDTO> userResponse = restTemplate.exchange(
+                getUriCreateUser(),
+                HttpMethod.POST,
+                getHttpEntityWithJsonContentTypeWithBody(userDTO),
+                UserDTO.class);
+
+        assertThat(userResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        UserDTO userResponseBody = userResponse.getBody();
+        if (userResponseBody != null) {
+            assertThat(userResponseBody.getClass()).isEqualTo(UserDTO.class);
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    @Test
+    @DisplayName("Failed POST-Mapping - User invalid")
+    void invalidUser() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(null);
+        userDTO.setFirstName("Vorname");
+        userDTO.setLastName("Nachname");
+        userDTO.setEmail("mail@mail.com");
+
+        ResponseEntity<UserDTO> userResponse = restTemplate.exchange(
+                getUriCreateUser(),
+                HttpMethod.POST,
+                getHttpEntityWithJsonContentTypeWithBody(userDTO),
+                UserDTO.class);
+
+        assertThat(userResponse.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+        assertThat(userResponse.getBody()).isNull();
+    }
+
+    private URI getUriCreateUser() {
+        String url = "http://localhost:" + serverPort + "/users";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(url);
+        return builder.build().encode().toUri();
+    }
+
+    private HttpEntity<?> getHttpEntityWithJsonContentTypeWithBody(UserDTO userDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        return new HttpEntity<>(userDTO, headers);
     }
 
     @Test
@@ -47,11 +99,11 @@ class UserControllerIntegrationTest {
     void userCannotBeFoundByEmail() {
         String mail = "nichtExistierendeEmail@email.com";
 
-        ResponseEntity<User> userResponse = restTemplate.exchange(
+        ResponseEntity<UserDTO> userResponse = restTemplate.exchange(
                 getUriFindUserByEmail(mail),
                 HttpMethod.GET,
-                getHttpEntityWithJsonContentType(),
-                User.class);
+                getHttpEntityWithJsonContentTypeNoBody(),
+                UserDTO.class);
 
         assertThat(userResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -66,13 +118,13 @@ class UserControllerIntegrationTest {
         ResponseEntity<UserDTO> userResponse = restTemplate.exchange(
                 getUriFindUserByEmail(email),
                 HttpMethod.GET,
-                getHttpEntityWithJsonContentType(),
+                getHttpEntityWithJsonContentTypeNoBody(),
                 UserDTO.class);
 
         assertThat(userResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         UserDTO userResponseBody = userResponse.getBody();
         if (userResponseBody != null) {
-            assertThat(userResponse.getBody().getClass()).isEqualTo(UserDTO.class);
+            assertThat(userResponseBody.getClass()).isEqualTo(UserDTO.class);
         } else {
             fail("ResponseBody is null!");
         }
@@ -86,13 +138,9 @@ class UserControllerIntegrationTest {
         return builder.build().encode().toUri();
     }
 
-    private HttpEntity<?> getHttpEntityWithJsonContentType() {
+    private HttpEntity<?> getHttpEntityWithJsonContentTypeNoBody() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         return new HttpEntity<>(headers);
-    }
-
-    @Test
-    void findParticipatingUsersBySurveyId() {
     }
 }
