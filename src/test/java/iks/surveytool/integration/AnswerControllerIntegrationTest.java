@@ -1,10 +1,9 @@
 package iks.surveytool.integration;
 
 import iks.surveytool.dtos.AnswerDTO;
-import iks.surveytool.entities.User;
-import iks.surveytool.repositories.AnswerRepository;
-import iks.surveytool.repositories.SurveyRepository;
-import iks.surveytool.repositories.UserRepository;
+import iks.surveytool.entities.*;
+import iks.surveytool.repositories.*;
+import iks.surveytool.utils.builder.AnswerBuilder;
 import iks.surveytool.utils.builder.SurveyBuilder;
 import iks.surveytool.utils.builder.UserBuilder;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,6 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -43,15 +43,55 @@ class AnswerControllerIntegrationTest {
      * Question #1: id = 1L, hasCheckbox = false
      * Question #2: id = 2L, hasCheckbox = true
      * => Checkbox #1-#4: id = 1L-4L, #2 & #3: hasTextField = true
+     * ...and Answers to fetch by questionId/surveyId
      */
     @BeforeAll
     static void fillDatabase(@Autowired UserRepository userRepository,
-                             @Autowired SurveyRepository surveyRepository) {
-        User user1 = new UserBuilder().createUser(1L, "Test Person", "user1@default.de");
+                             @Autowired SurveyRepository surveyRepository,
+                             @Autowired QuestionRepository questionRepository,
+                             @Autowired CheckboxRepository checkboxRepository,
+                             @Autowired AnswerRepository answerRepository) {
+        User user1 = new UserBuilder().createUser(1L, "Test Person #1", "user1@default.de");
         User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
-        userRepository.saveAll(List.of(user1, user2));
+        User user3 = new UserBuilder().createUser(3L, "Test Person #3", "user3@default.de");
+        userRepository.saveAll(List.of(user1, user2, user3));
 
-        surveyRepository.save(new SurveyBuilder().createCompleteAndValidSurvey(user1));
+        Survey survey = new SurveyBuilder().createCompleteAndValidSurvey(user1);
+        surveyRepository.save(survey);
+
+        Optional<Question> firstQuestionOptional = questionRepository.findById(1L);
+        Question firstQuestion = null;
+        if (firstQuestionOptional.isPresent()) {
+            firstQuestion = firstQuestionOptional.get();
+        }
+        Optional<Question> secondQuestionOptional = questionRepository.findById(2L);
+        Question secondQuestion = null;
+        if (secondQuestionOptional.isPresent()) {
+            secondQuestion = secondQuestionOptional.get();
+        }
+        Optional<Checkbox> firstCheckboxOptional = checkboxRepository.findById(1L);
+        Checkbox firstCheckbox = null;
+        if (firstCheckboxOptional.isPresent()) {
+            firstCheckbox = firstCheckboxOptional.get();
+        }
+        Optional<Checkbox> secondCheckboxOptional = checkboxRepository.findById(2L);
+        Checkbox secondCheckbox = null;
+        if (secondCheckboxOptional.isPresent()) {
+            secondCheckbox = secondCheckboxOptional.get();
+        }
+        Optional<User> thirdUserOptional = userRepository.findById(3L);
+        User thirdUserFromDb = null;
+        if (thirdUserOptional.isPresent()) {
+            thirdUserFromDb = thirdUserOptional.get();
+        }
+
+        Answer firstAnswer = new AnswerBuilder()
+                .createAnswer(1L, "First Answer", thirdUserFromDb, firstQuestion, null);
+        Answer secondAnswer = new AnswerBuilder()
+                .createAnswer(2L, null, thirdUserFromDb, secondQuestion, firstCheckbox);
+        Answer thirdAnswer = new AnswerBuilder()
+                .createAnswer(3L, "Third Answer", thirdUserFromDb, secondQuestion, secondCheckbox);
+        answerRepository.saveAll(List.of(firstAnswer, secondAnswer, thirdAnswer));
     }
 
     @Test
@@ -74,6 +114,7 @@ class AnswerControllerIntegrationTest {
         AnswerDTO[] answerResponseBody = answerResponse.getBody();
         if (answerResponseBody != null) {
             assertThat(answerResponseBody.getClass()).isEqualTo(AnswerDTO[].class);
+            assertThat(answerResponseBody).isNotEmpty();
         } else {
             fail("ResponseBody is null!");
         }
@@ -104,6 +145,7 @@ class AnswerControllerIntegrationTest {
         AnswerDTO[] answerResponseBody = answerResponse.getBody();
         if (answerResponseBody != null) {
             assertThat(answerResponseBody.getClass()).isEqualTo(AnswerDTO[].class);
+            assertThat(answerResponseBody).isNotEmpty();
         } else {
             fail("ResponseBody is null!");
         }
