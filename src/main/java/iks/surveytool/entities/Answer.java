@@ -19,7 +19,7 @@ public class Answer extends AbstractEntity {
     private String participantName;
     private String participantId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "userId")
     private User user;
 
