@@ -57,8 +57,16 @@ public class UserService {
     }
 
     public ResponseEntity<List<UserDTO>> processParticipatingUsersBySurveyId(Long surveyId) {
-        List<UserDTO> users = mapParticipatingUsersToDTOBySurveyId(surveyId);
-        return ResponseEntity.ok(users);
+        log.trace("Looking for participating users by surveyId (id: {})...", surveyId);
+
+        try {
+            List<UserDTO> users = mapParticipatingUsersToDTOBySurveyId(surveyId);
+            log.trace("Successfully fetched participating users by surveyId (id: {}).", surveyId);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            log.error("Error while mapping users to userDTOs", e);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     private List<UserDTO> mapParticipatingUsersToDTOBySurveyId(Long surveyId) {
