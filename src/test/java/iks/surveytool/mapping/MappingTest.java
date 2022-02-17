@@ -66,6 +66,8 @@ class MappingTest {
 
         CheckboxGroupDTO checkboxGroupDTO = new CheckboxGroupDTO();
         checkboxGroupDTO.setMultipleSelect(false);
+        checkboxGroupDTO.setMinSelect(0);
+        checkboxGroupDTO.setMaxSelect(2);
         checkboxGroupDTO.setCheckboxes(List.of(firstCheckboxDTO, secondCheckboxDTO));
 
         QuestionDTO firstQuestionDTO = new QuestionDTO();
@@ -85,6 +87,7 @@ class MappingTest {
 
         CompleteSurveyDTO surveyDTO = new CompleteSurveyDTO();
         surveyDTO.setName("Test Survey");
+        surveyDTO.setDescription("yo");
         surveyDTO.setStartDate(LocalDateTime.of(2050, 1, 1, 12, 0));
         surveyDTO.setEndDate(surveyDTO.getStartDate().plusWeeks(1L));
         surveyDTO.setOpenAccess(false);
