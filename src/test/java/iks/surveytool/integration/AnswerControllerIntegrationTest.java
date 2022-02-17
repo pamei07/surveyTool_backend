@@ -6,9 +6,7 @@ import iks.surveytool.repositories.*;
 import iks.surveytool.utils.builder.AnswerBuilder;
 import iks.surveytool.utils.builder.SurveyBuilder;
 import iks.surveytool.utils.builder.UserBuilder;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,11 +32,23 @@ class AnswerControllerIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private CheckboxRepository checkboxRepository;
+
     @LocalServerPort
     private int serverPort;
 
     /**
-     * Fill database with complete survey to create answers to:
+     * Fill database with complete survey (id: 1) to create answers to:
      * Question #1: id = 1L, hasCheckbox = false
      * Question #2: id = 2L, hasCheckbox = true
      * => Checkbox #1-#4: id = 1L-4L, #2 & #3: hasTextField = true
@@ -57,7 +67,10 @@ class AnswerControllerIntegrationTest {
 
         Survey survey = new SurveyBuilder().createCompleteAndValidSurvey(user1);
         surveyRepository.save(survey);
+    }
 
+    @BeforeEach
+    void addAnswers() {
         Optional<Question> firstQuestionOptional = questionRepository.findById(1L);
         Question firstQuestion = null;
         if (firstQuestionOptional.isPresent()) {
@@ -91,6 +104,11 @@ class AnswerControllerIntegrationTest {
         Answer thirdAnswer = new AnswerBuilder()
                 .createAnswer(3L, "Third Answer", thirdUserFromDb, secondQuestion, secondCheckbox);
         answerRepository.saveAll(List.of(firstAnswer, secondAnswer, thirdAnswer));
+    }
+
+    @AfterEach
+    void removeAnswers() {
+        answerRepository.deleteAll();
     }
 
     @Test
@@ -242,6 +260,53 @@ class AnswerControllerIntegrationTest {
     }
 
     @Test
-    void findAnswersBySurveyId() {
+    @DisplayName("Successful GET-Mapping - 0 Answers found by surveyId")
+    void findNoAnswersBySurveyId() {
+        ResponseEntity<AnswerDTO[]> answerResponse = restTemplate.exchange(
+                getUriFindAnswersBySurveyId(9999L),
+                HttpMethod.GET,
+                getHttpEntityWithJsonContentTypeNoBody(),
+                AnswerDTO[].class);
+
+        assertThat(answerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        AnswerDTO[] answerResponseBody = answerResponse.getBody();
+        if (answerResponseBody != null) {
+            assertThat(answerResponseBody).isEmpty();
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    @Test
+    @DisplayName("Successful GET-Mapping - 3 Answers found by surveyId")
+    void findThreeAnswersBySurveyId() {
+        ResponseEntity<AnswerDTO[]> answerResponse = restTemplate.exchange(
+                getUriFindAnswersBySurveyId(1L),
+                HttpMethod.GET,
+                getHttpEntityWithJsonContentTypeNoBody(),
+                AnswerDTO[].class);
+
+        assertThat(answerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        AnswerDTO[] answerResponseBody = answerResponse.getBody();
+        if (answerResponseBody != null) {
+            for (AnswerDTO answerDTO : answerResponseBody) {
+                System.out.println(answerDTO.getId());
+                System.out.println(answerDTO.getText());
+                System.out.println(answerDTO.getParticipantName());
+            }
+            assertThat(answerResponseBody).hasSize(3);
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    private URI getUriFindAnswersBySurveyId(Long surveyId) {
+        Map<String, Long> pathVariables = new HashMap<>();
+        pathVariables.put("surveyId", surveyId);
+
+        String url = "http://localhost:" + serverPort + "/answers/surveys/{surveyId}";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(url);
+        return builder.buildAndExpand(pathVariables).encode().toUri();
     }
 }
