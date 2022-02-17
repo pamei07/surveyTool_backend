@@ -18,7 +18,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,9 +33,6 @@ class AnswerControllerIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Autowired
-    private AnswerRepository answerRepository;
 
     @LocalServerPort
     private int serverPort;
@@ -191,7 +190,55 @@ class AnswerControllerIntegrationTest {
     }
 
     @Test
-    void findAnswersByQuestionId() {
+    @DisplayName("Successful GET-Mapping - 0 Answers found by questionId")
+    void findNoAnswersByQuestionId() {
+        ResponseEntity<AnswerDTO[]> answerResponse = restTemplate.exchange(
+                getUriFindAnswersByQuestionId(9999L),
+                HttpMethod.GET,
+                getHttpEntityWithJsonContentTypeNoBody(),
+                AnswerDTO[].class);
+
+        assertThat(answerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        AnswerDTO[] answerResponseBody = answerResponse.getBody();
+        if (answerResponseBody != null) {
+            assertThat(answerResponseBody).isEmpty();
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    @Test
+    @DisplayName("Successful GET-Mapping - 2 Answers found by questionId")
+    void findTwoAnswersByQuestionId() {
+        ResponseEntity<AnswerDTO[]> answerResponse = restTemplate.exchange(
+                getUriFindAnswersByQuestionId(2L),
+                HttpMethod.GET,
+                getHttpEntityWithJsonContentTypeNoBody(),
+                AnswerDTO[].class);
+
+        assertThat(answerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        AnswerDTO[] answerResponseBody = answerResponse.getBody();
+        if (answerResponseBody != null) {
+            assertThat(answerResponseBody).hasSize(2);
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    private URI getUriFindAnswersByQuestionId(Long questionId) {
+        Map<String, Long> pathVariables = new HashMap<>();
+        pathVariables.put("questionId", questionId);
+
+        String url = "http://localhost:" + serverPort + "/answers/questions/{questionId}";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(url);
+        return builder.buildAndExpand(pathVariables).encode().toUri();
+    }
+
+    private HttpEntity<?> getHttpEntityWithJsonContentTypeNoBody() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        return new HttpEntity<>(headers);
     }
 
     @Test
