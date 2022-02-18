@@ -40,10 +40,10 @@ public class SurveyController {
         return surveyService.processOpenAccessSurveys();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{userId}")
     @RolesAllowed("surveytool-user")
-    public ResponseEntity<List<SurveyOverviewDTO>> findSurveysByUserId(@PathVariable Long id) {
-        return surveyService.processSurveysByUserId(id);
+    public ResponseEntity<List<SurveyOverviewDTO>> findSurveysByUserId(@PathVariable Long userId) {
+        return surveyService.processSurveysByUserId(userId);
     }
 
     @DeleteMapping("/{id}")
