@@ -36,6 +36,9 @@ class MappingTest {
     @BeforeAll
     static void fillDatabase(@Autowired UserRepository userRepository,
                              @Autowired SurveyRepository surveyRepository) {
+        userRepository.deleteAll();
+        surveyRepository.deleteAll();
+
         User user1 = new UserBuilder().createUser(1L, "Test Person", "user1@default.de");
         User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
         userRepository.saveAll(List.of(user1, user2));

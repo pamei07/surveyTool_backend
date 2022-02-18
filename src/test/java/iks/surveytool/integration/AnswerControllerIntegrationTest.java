@@ -57,6 +57,9 @@ class AnswerControllerIntegrationTest {
     @BeforeAll
     static void fillDatabase(@Autowired UserRepository userRepository,
                              @Autowired SurveyRepository surveyRepository) {
+        userRepository.deleteAll();
+        surveyRepository.deleteAll();
+
         User user1 = new UserBuilder().createUser(1L, "Test Person #1", "user1@default.de");
         User user2 = new UserBuilder().createUser(2L, "Test Person #2", "user2@default.de");
         User user3 = new UserBuilder().createUser(3L, "Test Person #3", "user3@default.de");
