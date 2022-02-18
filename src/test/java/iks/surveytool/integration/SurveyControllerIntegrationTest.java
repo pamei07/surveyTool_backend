@@ -53,6 +53,7 @@ class SurveyControllerIntegrationTest {
         surveyWithinTimeFrame.setId(2L);
         surveyWithinTimeFrame.setParticipationId("Survey within TimeFrame ParticipantId");
         surveyWithinTimeFrame.setAccessId("Survey within TimeFrame AccessId");
+        surveyWithinTimeFrame.setOpenAccess(true);
         surveyWithinTimeFrame.setStartDate(LocalDateTime.of(2000, 1, 1, 12, 0));
         surveyWithinTimeFrame.setEndDate(LocalDateTime.of(2050, 1, 1, 12, 0));
         surveyRepository.saveAll(List.of(surveyNotWithinTimeFrame, surveyWithinTimeFrame));
@@ -264,7 +265,28 @@ class SurveyControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Successful GET-Mapping - 2 OpenAccess Survey found")
     void findOpenAccessSurveys() {
+        ResponseEntity<SurveyOverviewDTO[]> surveyResponse = restTemplate.exchange(
+                getUriFindOpenAccessSurveys(),
+                HttpMethod.GET,
+                getHttpEntityWithJsonContentTypeNoBody(),
+                SurveyOverviewDTO[].class);
+
+        assertThat(surveyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        SurveyOverviewDTO[] surveyResponseBody = surveyResponse.getBody();
+        if (surveyResponseBody != null) {
+            assertThat(surveyResponseBody).hasSize(1);
+        } else {
+            fail("ResponseBody is null!");
+        }
+    }
+
+    private URI getUriFindOpenAccessSurveys() {
+        String url = "http://localhost:" + serverPort + "/surveys";
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(url);
+        return builder.build().encode().toUri();
     }
 
     @Test
