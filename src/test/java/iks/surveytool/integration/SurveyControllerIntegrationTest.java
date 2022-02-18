@@ -289,19 +289,5 @@ class SurveyControllerIntegrationTest {
         return builder.build().encode().toUri();
     }
 
-    @Test
-    void findSurveysByUserId() {
-    }
-
-    @Test
-    void deleteSurveyById() {
-    }
-
-    @Test
-    void updateSurvey() {
-    }
-
-    @Test
-    void patchSurveyEndDate() {
-    }
+    // TODO: Test @RolesAllowed-annotated mappings
 }
