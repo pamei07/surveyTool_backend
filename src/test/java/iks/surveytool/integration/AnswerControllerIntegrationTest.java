@@ -286,11 +286,6 @@ class AnswerControllerIntegrationTest {
         assertThat(answerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         AnswerDTO[] answerResponseBody = answerResponse.getBody();
         if (answerResponseBody != null) {
-            for (AnswerDTO answerDTO : answerResponseBody) {
-                System.out.println(answerDTO.getId());
-                System.out.println(answerDTO.getText());
-                System.out.println(answerDTO.getParticipantName());
-            }
             assertThat(answerResponseBody).hasSize(3);
         } else {
             fail("ResponseBody is null!");
