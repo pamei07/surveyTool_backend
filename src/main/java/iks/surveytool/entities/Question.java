@@ -20,6 +20,8 @@ public class Question extends AbstractEntity {
     private boolean required;
     @NotNull
     private boolean hasCheckbox;
+    @NotNull
+    private QuestionType questionType;
 
     @ManyToOne
     @JoinColumn(name = "questionGroupId", nullable = false)
