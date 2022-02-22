@@ -1,5 +1,6 @@
 package iks.surveytool.dtos;
 
+import iks.surveytool.entities.QuestionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ public class QuestionDTO extends AbstractDTO {
     private String text;
     private boolean required;
     private boolean hasCheckbox;
+    private QuestionType questionType;
 
     private CheckboxGroupDTO checkboxGroup;
 
