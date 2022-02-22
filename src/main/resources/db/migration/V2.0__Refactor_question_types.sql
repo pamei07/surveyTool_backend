@@ -1,14 +1,5 @@
-CREATE TYPE questionTypes AS ENUM (
-    'TEXT',
-    'MULTIPLE_CHOICE',
-    'RATING_MATRIX',
-    'DROPDOWN',
-    'RANKING',
-    'IMAGE_CHOICE',
-    'FILE_UPLOAD');
-
 ALTER TABLE question
-    ADD COLUMN questionType questionTypes NULL;
+    ADD COLUMN questionType VARCHAR(100) NULL;
 
 UPDATE question
 SET questionType = 'TEXT'
@@ -17,3 +8,6 @@ WHERE question.hascheckbox = FALSE;
 UPDATE question
 SET questionType = 'MULTIPLE_CHOICE'
 WHERE question.hascheckbox = TRUE;
+
+ALTER TABLE question
+    ALTER COLUMN questionType SET NOT NULL;
