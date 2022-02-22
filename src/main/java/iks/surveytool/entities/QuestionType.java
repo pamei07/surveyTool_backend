@@ -1,8 +1,5 @@
 package iks.surveytool.entities;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public enum QuestionType {
     TEXT,
     MULTIPLE_CHOICE,

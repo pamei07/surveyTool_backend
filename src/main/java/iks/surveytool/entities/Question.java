@@ -18,11 +18,11 @@ public class Question extends AbstractEntity {
     private String text;
     @NotNull
     private boolean required;
-    @NotNull
+
     private boolean hasCheckbox;
 
-    @Embedded
     @NotNull
+    @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
     @ManyToOne
