@@ -37,10 +37,11 @@ public class Answer extends AbstractEntity {
     }
 
     public boolean validate() {
-        if (this.participantName == null || this.question == null || (this.question.isHasCheckbox() && this.checkbox == null)) {
+        if (this.participantName == null || this.question == null ||
+                (this.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE && this.checkbox == null)) {
             return false;
         }
-        if (!this.question.isHasCheckbox() || this.checkbox.isHasTextField()) {
+        if (this.question.getQuestionType() != QuestionType.MULTIPLE_CHOICE || this.checkbox.isHasTextField()) {
             return this.checkIfAnswerTextValid();
         }
         return true;

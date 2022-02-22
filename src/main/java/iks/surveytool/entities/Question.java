@@ -50,14 +50,15 @@ public class Question extends AbstractEntity {
     }
 
     boolean checkIfComplete() {
-        if (this.hasCheckbox) {
+        if (this.questionType == QuestionType.MULTIPLE_CHOICE) {
             return this.checkboxGroup != null && checkboxGroup.checkIfComplete();
         }
         return true;
     }
 
     boolean validate() {
-        return validateData() && (!this.hasCheckbox || checkboxGroup.validate(this.required));
+        return validateData() &&
+                (this.questionType != QuestionType.MULTIPLE_CHOICE || checkboxGroup.validate(this.required));
     }
 
     private boolean validateData() {
