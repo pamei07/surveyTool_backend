@@ -61,8 +61,8 @@ public class SurveyBuilder {
                 .createCheckboxGroup(1L, true, 1, 3);
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfFourValidCheckboxes());
 
-        Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, false);
-        Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, true);
+        Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, QuestionType.TEXT);
+        Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, QuestionType.MULTIPLE_CHOICE);
         question2.setCheckboxGroup(checkboxGroup);
         checkboxGroup.setQuestion(question2);
 

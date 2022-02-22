@@ -1,6 +1,7 @@
 package iks.surveytool.integration;
 
 import iks.surveytool.dtos.*;
+import iks.surveytool.entities.QuestionType;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.User;
 import iks.surveytool.repositories.SurveyRepository;
@@ -82,12 +83,14 @@ class SurveyControllerIntegrationTest {
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
         firstQuestionDTO.setHasCheckbox(true);
+        firstQuestionDTO.setQuestionType(QuestionType.MULTIPLE_CHOICE);
         firstQuestionDTO.setCheckboxGroup(checkboxGroupDTO);
 
         QuestionDTO secondQuestionDTO = new QuestionDTO();
         secondQuestionDTO.setText("Test Text Question");
         secondQuestionDTO.setRequired(true);
         secondQuestionDTO.setHasCheckbox(false);
+        secondQuestionDTO.setQuestionType(QuestionType.TEXT);
 
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();
         questionGroupDTO.setTitle("Test QuestionGroup");

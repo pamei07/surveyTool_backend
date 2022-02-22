@@ -29,7 +29,7 @@ class ValidationTest {
     @DisplayName("Failed validation - QuestionGroup missing Questions")
     void questionGroupIsMissingQuestion() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
@@ -53,7 +53,7 @@ class ValidationTest {
                 .createCheckboxGroup(1L, false, 0, 2);
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -80,7 +80,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(List.of(onlyCheckbox));
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -111,7 +111,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -131,9 +131,9 @@ class ValidationTest {
     @DisplayName("Failed validation - Question with hasCheckbox == true, but no CheckboxGroup")
     void questionHasCheckboxTrueButNoCheckboxGroup() {
         Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, false);
+                .createQuestion(2L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
@@ -152,7 +152,7 @@ class ValidationTest {
     @DisplayName("Failed validation - Survey name missing")
     void surveyBasicInfoMissing() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
@@ -171,7 +171,7 @@ class ValidationTest {
     @DisplayName("Failed validation - endDate before startDate")
     void surveyEndDateBeforeStartDate() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
@@ -190,7 +190,7 @@ class ValidationTest {
     @DisplayName("Failed validation - startDate in past")
     void startDateInPast() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
@@ -209,9 +209,9 @@ class ValidationTest {
     @DisplayName("Failed validation - QuestionGroup missing title")
     void questionGroupIsMissingTitle() {
         Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
         Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, false);
+                .createQuestion(2L, "Test Question", false, QuestionType.TEXT);
 
         QuestionGroup firstQuestionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, null);
@@ -231,9 +231,9 @@ class ValidationTest {
     @DisplayName("Failed validation - Question missing text")
     void questionIsMissingText() {
         Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, null, false, false);
+                .createQuestion(1L, null, false, QuestionType.TEXT);
         Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test", false, false);
+                .createQuestion(2L, "Test", false, QuestionType.TEXT);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Questions");
@@ -254,7 +254,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -278,7 +278,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -302,7 +302,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -333,7 +333,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -357,7 +357,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfThreeValidCheckboxes());
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", true, true);
+                .createQuestion(1L, "Test Question", true, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -381,7 +381,7 @@ class ValidationTest {
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfFourValidCheckboxes());
 
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
@@ -426,7 +426,7 @@ class ValidationTest {
     @DisplayName("Failed validation - Answer missing Checkbox")
     void answerMissingQuestion() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
 
         User user = new UserBuilder()
                 .createUser(1L, "Test User");
@@ -441,7 +441,7 @@ class ValidationTest {
     @DisplayName("Failed validation - Answer missing Text when Checkbox has text field")
     void answerMissingTextWhenCheckboxHasTextField() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
 
         User user = new UserBuilder()
                 .createUser(1L, "Test User");
@@ -459,7 +459,7 @@ class ValidationTest {
     @DisplayName("Failed validation - Answer missing Text when text Question")
     void answerMissingTextWhenQuestionWithTextField() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         User user = new UserBuilder()
                 .createUser(1L, "Test User");
@@ -474,7 +474,7 @@ class ValidationTest {
     @DisplayName("Successful validation - Complete Answer to text Question")
     void answerToTextQuestionIsComplete() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
 
         User user = new UserBuilder()
                 .createUser(1L, "Test User");
@@ -489,7 +489,7 @@ class ValidationTest {
     @DisplayName("Successful validation - Complete Answer to multiple choice Question")
     void answerToChoiceQuestionIsComplete() {
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+                .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
 
         User user = new UserBuilder()
                 .createUser(1L, "Test User");

@@ -117,9 +117,9 @@ class MappingTest {
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox));
 
         Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestion(1L, "Test Question", false, QuestionType.TEXT);
         Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, true);
+                .createQuestion(2L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         secondQuestion.setCheckboxGroup(checkboxGroup);
 
         User user = new UserBuilder().createUser(2L, "Test Person #2");

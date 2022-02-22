@@ -47,6 +47,7 @@ public class MappingAssertions {
         assertEquals(question.getText(), questionDTO.getText());
         assertEquals(question.isRequired(), questionDTO.isRequired());
         assertEquals(question.isHasCheckbox(), questionDTO.isHasCheckbox());
+        assertEquals(question.getQuestionType(), questionDTO.getQuestionType());
 
         if (questionDTO.isHasCheckbox()) {
             CheckboxGroup checkboxGroup = question.getCheckboxGroup();
