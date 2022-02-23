@@ -49,8 +49,8 @@ class AnswerControllerIntegrationTest {
 
     /**
      * Fill database with complete survey (id: 1) to create answers to:
-     * Question #1: id = 1L, hasCheckbox = false
-     * Question #2: id = 2L, hasCheckbox = true
+     * Question #1: id = 1L, QuestionType = TEXT
+     * Question #2: id = 2L, QuestionType = MULTIPLE_CHOICE
      * => Checkbox #1-#4: id = 1L-4L, #2 & #3: hasTextField = true
      * ...and Answers to fetch by questionId/surveyId
      */

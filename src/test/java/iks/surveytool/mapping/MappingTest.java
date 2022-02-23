@@ -29,8 +29,8 @@ class MappingTest {
 
     /**
      * Fill database as SurveyConverter and AnswerConverter retrieve objects from db to convert DTOs into DAOs:
-     * Question #1: id = 1L, hasCheckbox = false
-     * Question #2: id = 2L, hasCheckbox = true
+     * Question #1: id = 1L, QuestionType = TEXT
+     * Question #2: id = 2L, QuestionType = MULTIPLE_CHOICE
      * => Checkbox #1-#4: id = 1L-4L, #2 & #3: hasTextField = true
      */
     @BeforeAll
@@ -76,13 +76,11 @@ class MappingTest {
         QuestionDTO firstQuestionDTO = new QuestionDTO();
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
-        firstQuestionDTO.setHasCheckbox(true);
         firstQuestionDTO.setCheckboxGroup(checkboxGroupDTO);
 
         QuestionDTO secondQuestionDTO = new QuestionDTO();
         secondQuestionDTO.setText("Test Text Question");
         secondQuestionDTO.setRequired(true);
-        secondQuestionDTO.setHasCheckbox(false);
 
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();
         questionGroupDTO.setTitle("Test QuestionGroup");

@@ -82,14 +82,12 @@ class SurveyControllerIntegrationTest {
         QuestionDTO firstQuestionDTO = new QuestionDTO();
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
-        firstQuestionDTO.setHasCheckbox(true);
         firstQuestionDTO.setQuestionType(QuestionType.MULTIPLE_CHOICE);
         firstQuestionDTO.setCheckboxGroup(checkboxGroupDTO);
 
         QuestionDTO secondQuestionDTO = new QuestionDTO();
         secondQuestionDTO.setText("Test Text Question");
         secondQuestionDTO.setRequired(true);
-        secondQuestionDTO.setHasCheckbox(false);
         secondQuestionDTO.setQuestionType(QuestionType.TEXT);
 
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();

@@ -19,8 +19,6 @@ public class Question extends AbstractEntity {
     @NotNull
     private boolean required;
 
-    private boolean hasCheckbox;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
@@ -35,13 +33,6 @@ public class Question extends AbstractEntity {
 
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
     private CheckboxGroup checkboxGroup;
-
-    public Question(String text, boolean required, boolean hasCheckbox, QuestionType questionType) {
-        this.text = text;
-        this.required = required;
-        this.hasCheckbox = hasCheckbox;
-        this.questionType = questionType;
-    }
 
     public Question(String text, boolean required, QuestionType questionType) {
         this.text = text;

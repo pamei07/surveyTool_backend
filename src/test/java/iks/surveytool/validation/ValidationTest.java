@@ -128,8 +128,8 @@ class ValidationTest {
     }
 
     @Test
-    @DisplayName("Failed validation - Question with hasCheckbox == true, but no CheckboxGroup")
-    void questionHasCheckboxTrueButNoCheckboxGroup() {
+    @DisplayName("Failed validation - MULTIPLE_CHOICE Question, but no CheckboxGroup")
+    void multipleChoiceQuestionButNoCheckboxGroup() {
         Question firstQuestion = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         Question secondQuestion = new QuestionBuilder()

@@ -56,7 +56,7 @@ public class SurveyConverter {
 
         private Question toQuestionEntity(QuestionDTO questionDTO) {
             Question question = new Question(questionDTO.getText(), questionDTO.isRequired(),
-                    questionDTO.isHasCheckbox(), questionDTO.getQuestionType());
+                    questionDTO.getQuestionType());
 
             if (questionDTO.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
                 CheckboxGroup checkboxGroup = toCheckboxGroupEntity(questionDTO.getCheckboxGroup());
