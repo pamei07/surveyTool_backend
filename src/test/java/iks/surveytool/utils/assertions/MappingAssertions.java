@@ -49,7 +49,7 @@ public class MappingAssertions {
         assertEquals(question.isHasCheckbox(), questionDTO.isHasCheckbox());
         assertEquals(question.getQuestionType(), questionDTO.getQuestionType());
 
-        if (questionDTO.isHasCheckbox()) {
+        if (questionDTO.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
             CheckboxGroup checkboxGroup = question.getCheckboxGroup();
             CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
             assertCheckboxGroup(checkboxGroup, checkboxGroupDTO);
