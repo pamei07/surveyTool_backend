@@ -17,6 +17,7 @@ public class AnswerDTO extends AbstractDTO {
 
     private Long checkboxId;
     private Long questionId;
+    private Long optionId;
 
     public AnswerDTO(Long id, String text, Long userId, String participantName) {
         super(id);

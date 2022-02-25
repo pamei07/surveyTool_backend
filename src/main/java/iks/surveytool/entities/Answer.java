@@ -31,6 +31,10 @@ public class Answer extends AbstractEntity {
     @JoinColumn(name = "checkboxId")
     private Checkbox checkbox;
 
+    @ManyToOne
+    @JoinColumn(name = "optionId")
+    private Option option;
+
     public Answer(String text, String participantName) {
         this.text = text;
         this.participantName = participantName;

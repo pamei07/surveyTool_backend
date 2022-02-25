@@ -34,6 +34,9 @@ public class Question extends AbstractEntity {
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
     private CheckboxGroup checkboxGroup;
 
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private RankingGroup rankingGroup;
+
     public Question(String text, boolean required, QuestionType questionType) {
         this.text = text;
         this.required = required;

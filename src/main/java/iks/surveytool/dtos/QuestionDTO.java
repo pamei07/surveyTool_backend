@@ -15,5 +15,6 @@ public class QuestionDTO extends AbstractDTO {
     private QuestionType questionType;
 
     private CheckboxGroupDTO checkboxGroup;
-    
+    private RankingGroupDTO rankingGroup;
+
 }

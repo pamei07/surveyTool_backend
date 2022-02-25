@@ -63,6 +63,11 @@ public class SurveyConverter {
                 // Set references for the one-to-one-relationship
                 checkboxGroup.setQuestion(question);
                 question.setCheckboxGroup(checkboxGroup);
+            } else if (questionDTO.getQuestionType() == QuestionType.RANKING) {
+                RankingGroup rankingGroup = toRankingGroupEntity(questionDTO.getRankingGroup());
+                // Set references for the one-to-one-relationship
+                rankingGroup.setQuestion(question);
+                question.setRankingGroup(rankingGroup);
             }
 
             return question;
@@ -79,6 +84,19 @@ public class SurveyConverter {
 
         private Checkbox toCheckboxEntity(CheckboxDTO checkboxDTO) {
             return new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField(), checkboxDTO.getPlaceholder());
+        }
+
+        private RankingGroup toRankingGroupEntity(RankingGroupDTO rankingGroupDTO) {
+            return new RankingGroup(rankingGroupDTO.getLowestRated(), rankingGroupDTO.getHighestRated(),
+                    toOptionEntityList(rankingGroupDTO.getOptions()));
+        }
+
+        private List<Option> toOptionEntityList(List<OptionDTO> optionDTOs) {
+            return optionDTOs.stream().map(this::toOptionEntity).collect(Collectors.toList());
+        }
+
+        private Option toOptionEntity(OptionDTO optionDTO) {
+            return new Option(optionDTO.getText());
         }
     };
 
