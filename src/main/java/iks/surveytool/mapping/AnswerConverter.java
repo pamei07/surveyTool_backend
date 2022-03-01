@@ -1,11 +1,9 @@
 package iks.surveytool.mapping;
 
 import iks.surveytool.dtos.AnswerDTO;
-import iks.surveytool.entities.Answer;
-import iks.surveytool.entities.Checkbox;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.User;
+import iks.surveytool.entities.*;
 import iks.surveytool.repositories.CheckboxRepository;
+import iks.surveytool.repositories.OptionRepository;
 import iks.surveytool.repositories.QuestionRepository;
 import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +19,7 @@ public class AnswerConverter {
 
     private final QuestionRepository questionRepository;
     private final CheckboxRepository checkboxRepository;
+    private final OptionRepository optionRepository;
     private final UserRepository userRepository;
 
     public Converter<AnswerDTO, Answer> toDAO = new AbstractConverter<AnswerDTO, Answer>() {
@@ -61,6 +60,17 @@ public class AnswerConverter {
                     Checkbox checkbox = checkboxOptional.get();
                     answer.setCheckbox(checkbox);
                 }
+            }
+
+            Long optionId = answerDTO.getOptionId();
+            if (optionId != null) {
+                Optional<Option> optionOptional = optionRepository.findById(optionId);
+                if (optionOptional.isPresent()) {
+                    Option option = optionOptional.get();
+                    answer.setOption(option);
+                }
+
+                answer.setRank(answerDTO.getRank());
             }
 
             return answer;

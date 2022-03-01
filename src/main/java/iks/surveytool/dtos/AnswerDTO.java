@@ -14,6 +14,7 @@ public class AnswerDTO extends AbstractDTO {
     private Long userId;
     private String participantName;
     private String participantId;
+    private int rank;
 
     private Long checkboxId;
     private Long questionId;

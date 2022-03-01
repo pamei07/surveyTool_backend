@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,6 +15,8 @@ public class Answer extends AbstractEntity {
     private String text;
     private String participantName;
     private String participantId;
+    @Column(name = "ranknumber")
+    private int rank;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "userId")
@@ -45,7 +44,8 @@ public class Answer extends AbstractEntity {
                 (this.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE && this.checkbox == null)) {
             return false;
         }
-        if (this.question.getQuestionType() != QuestionType.MULTIPLE_CHOICE || this.checkbox.isHasTextField()) {
+        if (this.question.getQuestionType() == QuestionType.TEXT ||
+                (this.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE && this.checkbox.isHasTextField())) {
             return this.checkIfAnswerTextValid();
         }
         return true;
