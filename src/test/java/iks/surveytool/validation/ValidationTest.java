@@ -471,6 +471,36 @@ class ValidationTest {
     }
 
     @Test
+    @DisplayName("Failed validation - Answer missing rank when ranking Question")
+    void answerMissingRankWhenRankingQuestion() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+
+        User user = new UserBuilder().createUser(1L, "Test User");
+
+        Option option = new OptionBuilder().createOption(1L, "Test");
+
+        Answer answer = new AnswerBuilder()
+                .createRankingAnswer(1L, user, question, option, null);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Answer missing Option when ranking Question")
+    void answerMissingOptionWhenRankingQuestion() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+
+        User user = new UserBuilder().createUser(1L, "Test User");
+
+        Answer answer = new AnswerBuilder()
+                .createRankingAnswer(1L, user, question, null, 3);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
     @DisplayName("Successful validation - Complete Answer to text Question")
     void answerToTextQuestionIsComplete() {
         Question question = new QuestionBuilder()
@@ -499,6 +529,22 @@ class ValidationTest {
 
         Answer answer = new AnswerBuilder()
                 .createAnswer(1L, null, user, question, checkbox);
+
+        assertTrue(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Successful validation - Complete Answer to ranking Question")
+    void answerToRankingQuestionIsComplete() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+
+        User user = new UserBuilder().createUser(1L, "Test User");
+
+        Option option = new OptionBuilder().createOption(1L, "Test");
+
+        Answer answer = new AnswerBuilder()
+                .createRankingAnswer(1L, user, question, option, 3);
 
         assertTrue(answer.validate());
     }

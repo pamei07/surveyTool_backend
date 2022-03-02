@@ -41,7 +41,9 @@ public class Answer extends AbstractEntity {
 
     public boolean validate() {
         if (this.participantName == null || this.question == null ||
-                (this.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE && this.checkbox == null)) {
+                (this.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE && this.checkbox == null) ||
+                (this.question.getQuestionType() == QuestionType.RANKING &&
+                        (this.option == null || rank == null))) {
             return false;
         }
         if (this.question.getQuestionType() == QuestionType.TEXT ||
