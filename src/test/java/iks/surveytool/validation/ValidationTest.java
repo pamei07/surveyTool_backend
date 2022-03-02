@@ -149,6 +149,74 @@ class ValidationTest {
     }
 
     @Test
+    @DisplayName("Failed validation - RANKING Question, but no RankingGroup")
+    void rankingQuestionButNoRankingGroup() {
+        Question firstQuestion = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+        Question secondQuestion = new QuestionBuilder()
+                .createQuestion(2L, "Test Question", false, QuestionType.TEXT);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(survey.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - No Options")
+    void rankingQuestionNoOptions() {
+        RankingGroup rankingGroup = new RankingGroupBuilder().createRankingGroup(1L);
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+        question.setRankingGroup(rankingGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough options for question", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(survey.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Only One Option")
+    void rankingQuestionOnlyOneOptions() {
+        Option option = new OptionBuilder().createOption(1L, "Only option");
+
+        RankingGroup rankingGroup = new RankingGroupBuilder().createRankingGroup(1L);
+        rankingGroup.setOptions(List.of(option));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+        question.setRankingGroup(rankingGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough options for question", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(survey.validate());
+    }
+
+    @Test
     @DisplayName("Failed validation - Survey name missing")
     void surveyBasicInfoMissing() {
         Question question = new QuestionBuilder()
@@ -335,6 +403,61 @@ class ValidationTest {
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, QuestionType.MULTIPLE_CHOICE);
         question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(survey.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Option missing text")
+    void optionIsMissingText() {
+        Option firstOption = new OptionBuilder().createOption(1L, "Option");
+        Option secondOption = new OptionBuilder().createOption(2L, null);
+
+        RankingGroup rankingGroup = new RankingGroupBuilder().createRankingGroup(1L);
+        rankingGroup.setOptions(List.of(firstOption, secondOption));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+        question.setRankingGroup(rankingGroup);
+
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(survey.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - RankingGroup missing label")
+    void rankingGroupIsMissingLabel() {
+        Option firstOption = new OptionBuilder().createOption(1L, "Option");
+        Option secondOption = new OptionBuilder().createOption(2L, "2. Option");
+
+        RankingGroup rankingGroup = new RankingGroupBuilder().createRankingGroup(1L);
+        rankingGroup.setOptions(List.of(firstOption, secondOption));
+        rankingGroup.setHighestRated(null);
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, QuestionType.RANKING);
+        question.setRankingGroup(rankingGroup);
+
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");

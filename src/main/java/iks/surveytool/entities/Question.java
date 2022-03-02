@@ -46,13 +46,16 @@ public class Question extends AbstractEntity {
     boolean checkIfComplete() {
         if (this.questionType == QuestionType.MULTIPLE_CHOICE) {
             return this.checkboxGroup != null && checkboxGroup.checkIfComplete();
+        } else if (this.questionType == QuestionType.RANKING) {
+            return this.rankingGroup != null && rankingGroup.checkIfComplete();
         }
         return true;
     }
 
     boolean validate() {
         return validateData() &&
-                (this.questionType != QuestionType.MULTIPLE_CHOICE || checkboxGroup.validate(this.required));
+                (this.questionType != QuestionType.MULTIPLE_CHOICE || checkboxGroup.validate(this.required)) &&
+                (this.questionType != QuestionType.RANKING || rankingGroup.validate());
     }
 
     private boolean validateData() {

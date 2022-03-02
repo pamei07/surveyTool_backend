@@ -28,4 +28,8 @@ public class Option extends AbstractEntity {
     public Option(String text) {
         this.text = text;
     }
+
+    public boolean validate() {
+        return this.text != null && this.text.length() <= 255;
+    }
 }

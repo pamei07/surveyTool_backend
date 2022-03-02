@@ -31,4 +31,28 @@ public class RankingGroup extends AbstractEntity {
         this.highestRated = highestRated;
         this.options = options;
     }
+
+    public boolean checkIfComplete() {
+        return options.size() >= 2;
+    }
+
+    public boolean validate() {
+        return this.validateData() && this.validateOptions();
+    }
+
+    private boolean validateData() {
+        return checkLabelForLowestRated() && checkLabelForHighestRated();
+    }
+
+    private boolean checkLabelForHighestRated() {
+        return this.highestRated != null && this.highestRated.length() <= 255;
+    }
+
+    private boolean checkLabelForLowestRated() {
+        return this.lowestRated != null && this.lowestRated.length() <= 255;
+    }
+
+    private boolean validateOptions() {
+        return this.options.stream().allMatch(Option::validate);
+    }
 }
