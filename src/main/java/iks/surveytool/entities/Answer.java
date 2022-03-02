@@ -16,7 +16,7 @@ public class Answer extends AbstractEntity {
     private String participantName;
     private String participantId;
     @Column(name = "ranknumber")
-    private int rank;
+    private Integer rank;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "userId")
