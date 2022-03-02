@@ -52,6 +52,10 @@ public class MappingAssertions {
             CheckboxGroup checkboxGroup = question.getCheckboxGroup();
             CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
             assertCheckboxGroup(checkboxGroup, checkboxGroupDTO);
+        } else if (questionDTO.getQuestionType() == QuestionType.RANKING) {
+            RankingGroup rankingGroup = question.getRankingGroup();
+            RankingGroupDTO rankingGroupDTO = questionDTO.getRankingGroup();
+            assertRankingGroup(rankingGroup, rankingGroupDTO);
         }
     }
 
@@ -69,9 +73,27 @@ public class MappingAssertions {
     }
 
     private static void assertCheckbox(Checkbox checkbox, CheckboxDTO checkboxDTO) {
+        assertEquals(checkbox.getId(), checkboxDTO.getId());
         assertEquals(checkbox.getText(), checkboxDTO.getText());
         assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
         assertEquals(checkbox.getPlaceholder(), checkboxDTO.getPlaceholder());
+    }
+
+    private static void assertRankingGroup(RankingGroup rankingGroup, RankingGroupDTO rankingGroupDTO) {
+        assertEquals(rankingGroup.getId(), rankingGroupDTO.getId());
+        assertEquals(rankingGroup.getLowestRated(), rankingGroupDTO.getLowestRated());
+        assertEquals(rankingGroup.getHighestRated(), rankingGroupDTO.getHighestRated());
+
+        List<Option> options = rankingGroup.getOptions();
+        List<OptionDTO> optionDTOs = rankingGroupDTO.getOptions();
+        for (int i = 0; i < optionDTOs.size(); i++) {
+            assertOptions(options.get(i), optionDTOs.get(i));
+        }
+    }
+
+    private static void assertOptions(Option option, OptionDTO optionDTO) {
+        assertEquals(option.getId(), optionDTO.getId());
+        assertEquals(option.getText(), optionDTO.getText());
     }
 
     public static void assertAnswerMapping(List<Answer> answers, List<AnswerDTO> answerDTOs) {
@@ -92,6 +114,11 @@ public class MappingAssertions {
 
         if (answer.getCheckbox() != null) {
             assertEquals(answer.getCheckbox().getId(), answerDTO.getCheckboxId());
+        }
+
+        if (answer.getOption() != null) {
+            assertEquals(answer.getOption().getId(), answerDTO.getOptionId());
+            assertEquals(answer.getRank(), answerDTO.getRank());
         }
 
         if (answer.getQuestion() != null) {

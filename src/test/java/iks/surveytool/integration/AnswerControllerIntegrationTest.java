@@ -138,19 +138,25 @@ class AnswerControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Successful POST-Mapping - Two Answers added")
-    void addTwoAnswer() {
+    @DisplayName("Successful POST-Mapping - Multiple Answers added")
+    void addMultipleAnswers() {
         AnswerDTO firstAnswerDTO = new AnswerDTO();
         firstAnswerDTO.setText("Test answer");
         firstAnswerDTO.setParticipantName("Anonym");
         firstAnswerDTO.setUserId(2L);
         firstAnswerDTO.setQuestionId(1L);
-        AnswerDTO secondAnswerDTo = new AnswerDTO();
-        secondAnswerDTo.setParticipantName("Anonym");
-        secondAnswerDTo.setUserId(2L);
-        secondAnswerDTo.setQuestionId(2L);
-        secondAnswerDTo.setCheckboxId(1L);
-        AnswerDTO[] answerDTOs = {firstAnswerDTO, secondAnswerDTo};
+        AnswerDTO secondAnswerDTO = new AnswerDTO();
+        secondAnswerDTO.setParticipantName("Anonym");
+        secondAnswerDTO.setUserId(2L);
+        secondAnswerDTO.setQuestionId(2L);
+        secondAnswerDTO.setCheckboxId(1L);
+        AnswerDTO thirdAnswerDTO = new AnswerDTO();
+        thirdAnswerDTO.setUserId(2L);
+        thirdAnswerDTO.setParticipantName("Test User");
+        thirdAnswerDTO.setQuestionId(3L);
+        thirdAnswerDTO.setOptionId(2L);
+        thirdAnswerDTO.setRank(1);
+        AnswerDTO[] answerDTOs = {firstAnswerDTO, secondAnswerDTO, thirdAnswerDTO};
 
         ResponseEntity<AnswerDTO[]> answerResponse = restTemplate.exchange(
                 getUriAddAnswers(),

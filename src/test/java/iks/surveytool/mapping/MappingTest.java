@@ -73,18 +73,36 @@ class MappingTest {
         checkboxGroupDTO.setMaxSelect(2);
         checkboxGroupDTO.setCheckboxes(List.of(firstCheckboxDTO, secondCheckboxDTO));
 
+        OptionDTO firstOptionDTO = new OptionDTO();
+        firstOptionDTO.setText("First option");
+        OptionDTO secondOptionDTO = new OptionDTO();
+        secondOptionDTO.setText("Second option");
+
+        RankingGroupDTO rankingGroupDTO = new RankingGroupDTO();
+        rankingGroupDTO.setLowestRated("low");
+        rankingGroupDTO.setHighestRated("high");
+        rankingGroupDTO.setOptions(List.of(firstOptionDTO, secondOptionDTO));
+
         QuestionDTO firstQuestionDTO = new QuestionDTO();
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
+        firstQuestionDTO.setQuestionType(QuestionType.MULTIPLE_CHOICE);
         firstQuestionDTO.setCheckboxGroup(checkboxGroupDTO);
 
         QuestionDTO secondQuestionDTO = new QuestionDTO();
         secondQuestionDTO.setText("Test Text Question");
         secondQuestionDTO.setRequired(true);
+        secondQuestionDTO.setQuestionType(QuestionType.TEXT);
+
+        QuestionDTO thirdQuestionDTO = new QuestionDTO();
+        thirdQuestionDTO.setText("Test Ranking Question");
+        thirdQuestionDTO.setRequired(true);
+        thirdQuestionDTO.setQuestionType(QuestionType.RANKING);
+        thirdQuestionDTO.setRankingGroup(rankingGroupDTO);
 
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();
         questionGroupDTO.setTitle("Test QuestionGroup");
-        questionGroupDTO.setQuestions(List.of(firstQuestionDTO, secondQuestionDTO));
+        questionGroupDTO.setQuestions(List.of(firstQuestionDTO, secondQuestionDTO, thirdQuestionDTO));
 
         CompleteSurveyDTO surveyDTO = new CompleteSurveyDTO();
         surveyDTO.setName("Test Survey");
@@ -149,8 +167,14 @@ class MappingTest {
         secondAnswerDTO.setParticipantName("Test User");
         secondAnswerDTO.setQuestionId(2L);
         secondAnswerDTO.setCheckboxId(1L);
+        AnswerDTO thirdAnswerDTO = new AnswerDTO();
+        thirdAnswerDTO.setUserId(2L);
+        thirdAnswerDTO.setParticipantName("Test User");
+        thirdAnswerDTO.setQuestionId(3L);
+        thirdAnswerDTO.setOptionId(2L);
+        thirdAnswerDTO.setRank(1);
 
-        List<AnswerDTO> answerDTOs = List.of(secondAnswerDTO, secondAnswerDTO);
+        List<AnswerDTO> answerDTOs = List.of(secondAnswerDTO, secondAnswerDTO, thirdAnswerDTO);
 
         Type answerListType = new TypeToken<List<Answer>>() {
         }.getType();

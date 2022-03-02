@@ -61,14 +61,21 @@ public class SurveyBuilder {
                 .createCheckboxGroup(1L, true, 1, 3);
         checkboxGroup.setCheckboxes(new CheckboxBuilder().createListOfFourValidCheckboxes());
 
+        RankingGroup rankingGroup = new RankingGroupBuilder()
+                .createRankingGroup(1L);
+        rankingGroup.setOptions(new OptionBuilder().createListOfFourValidOptions());
+
         Question question1 = new QuestionBuilder().createQuestion(1L, "Frage 1", true, QuestionType.TEXT);
         Question question2 = new QuestionBuilder().createQuestion(2L, "Frage 2", false, QuestionType.MULTIPLE_CHOICE);
         question2.setCheckboxGroup(checkboxGroup);
         checkboxGroup.setQuestion(question2);
+        Question question3 = new QuestionBuilder().createQuestion(3L, "Frage 3", false, QuestionType.RANKING);
+        question3.setRankingGroup(rankingGroup);
+        rankingGroup.setQuestion(question3);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Questions");
-        questionGroupWithQuestion.setQuestions(List.of(question1, question2));
+        questionGroupWithQuestion.setQuestions(List.of(question1, question2, question3));
 
         Survey survey = this.createSurveyWithUserAndDefaultDate(1L, "Complete Survey init", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));

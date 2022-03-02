@@ -79,6 +79,16 @@ class SurveyControllerIntegrationTest {
         checkboxGroupDTO.setMaxSelect(2);
         checkboxGroupDTO.setCheckboxes(List.of(firstCheckboxDTO, secondCheckboxDTO));
 
+        OptionDTO firstOptionDTO = new OptionDTO();
+        firstOptionDTO.setText("First option");
+        OptionDTO secondOptionDTO = new OptionDTO();
+        secondOptionDTO.setText("Second option");
+
+        RankingGroupDTO rankingGroupDTO = new RankingGroupDTO();
+        rankingGroupDTO.setLowestRated("low");
+        rankingGroupDTO.setHighestRated("high");
+        rankingGroupDTO.setOptions(List.of(firstOptionDTO, secondOptionDTO));
+
         QuestionDTO firstQuestionDTO = new QuestionDTO();
         firstQuestionDTO.setText("Test Checkbox Question");
         firstQuestionDTO.setRequired(false);
@@ -90,9 +100,15 @@ class SurveyControllerIntegrationTest {
         secondQuestionDTO.setRequired(true);
         secondQuestionDTO.setQuestionType(QuestionType.TEXT);
 
+        QuestionDTO thirdQuestionDTO = new QuestionDTO();
+        thirdQuestionDTO.setText("Test Ranking Question");
+        thirdQuestionDTO.setRequired(true);
+        thirdQuestionDTO.setQuestionType(QuestionType.RANKING);
+        thirdQuestionDTO.setRankingGroup(rankingGroupDTO);
+
         QuestionGroupDTO questionGroupDTO = new QuestionGroupDTO();
         questionGroupDTO.setTitle("Test QuestionGroup");
-        questionGroupDTO.setQuestions(List.of(firstQuestionDTO, secondQuestionDTO));
+        questionGroupDTO.setQuestions(List.of(firstQuestionDTO, secondQuestionDTO, thirdQuestionDTO));
 
         CompleteSurveyDTO surveyDTO = new CompleteSurveyDTO();
         surveyDTO.setName("Test Survey");
