@@ -1,5 +1,3 @@
 # TODOs:
 
-- test git
-
 # Bugs:
